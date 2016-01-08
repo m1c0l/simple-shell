@@ -56,7 +56,17 @@ int main (int argc, char **argv) {
 
         case RDONLY:
           printf("rdonly: %s\n", optarg);
-          break;
+          FILE *inFile = fopen(optarg, "r");
+          if (!inFile) {
+            fprintf(stderr, "Error opening file for input: %s", optarg);
+            exit(0);
+          }
+          int readChar;
+          while ((readChar = fgetc(inFile)) != EOF) {
+            printf("%c", readChar);
+          }
+          fclose(inFile);
+          break; 
 
         case WRONLY:
           printf("wronly: %s\n", optarg);
