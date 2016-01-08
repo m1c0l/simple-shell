@@ -11,6 +11,16 @@ enum Options {
   RDWR
 };
 
+void wronly(char* filename) {
+  FILE *fp = fopen(filename, "w");
+  if(fp == NULL) {
+    fprintf(stderr, "wronly error\n");
+    exit(1);
+  }
+  fprintf(fp, "Writing to wronly file\n");
+  fclose(fp);
+}
+
 /* Flag set by ‘--verbose’. */
 static int verbose_flag;
 
@@ -60,6 +70,7 @@ int main (int argc, char **argv) {
 
         case WRONLY:
           printf("wronly: %s\n", optarg);
+          wronly(optarg);
           break;
 
         case RDWR:
