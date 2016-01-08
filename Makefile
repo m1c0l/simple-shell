@@ -8,7 +8,7 @@ simpsh: $(objects)
 	$(CC) $(CFLAGS) -o $@ obj/$(objects)
 
 %.o: %.c
-	@mkdir obj
+	@mkdir -p obj
 	$(CC) $(CFLAGS) -c $< -o obj/$@
 
 #main.o raymath.o: raymath.h
