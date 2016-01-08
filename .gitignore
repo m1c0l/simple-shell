@@ -30,6 +30,7 @@
 
 # Debug files
 *.dSYM/
+*.swp
 
 simpsh
 simpsh.tar.gz

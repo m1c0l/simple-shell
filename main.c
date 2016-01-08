@@ -2,6 +2,15 @@
 #include <stdlib.h>
 #include <getopt.h>
 
+/* Identifiers for the command line options
+ * Starts from 1 because flag arguments use 0 */
+
+enum Options {
+  RDONLY = 1,
+  WRONLY,
+  RDWR
+};
+
 /* Flag set by ‘--verbose’. */
 static int verbose_flag;
 
@@ -14,20 +23,18 @@ int main (int argc, char **argv) {
         {
           /* These options set a flag. */
           {"verbose", no_argument,       &verbose_flag, 1},
-          {"brief",   no_argument,       &verbose_flag, 0},
+          {"abort",   no_argument,       &verbose_flag, 0},
           /* These options don’t set a flag.
              We distinguish them by their indices. */
-          {"add",     no_argument,       0, 'a'},
-          {"append",  no_argument,       0, 'b'},
-          {"delete",  required_argument, 0, 'd'},
-          {"create",  required_argument, 0, 'c'},
-          {"file",    required_argument, 0, 'f'},
+          {"rdonly",  required_argument, 0, RDONLY},
+          {"wronly",  required_argument, 0, WRONLY},
+          {"rdwr",    required_argument, 0, RDWR},
           {0, 0, 0, 0}
         };
       /* getopt_long stores the option index here. */
       int option_index = 0;
 
-      c = getopt_long (argc, argv, "abc:d:f:",
+      c = getopt_long_only(argc, argv, "",
                        long_options, &option_index);
 
       /* Detect the end of the options. */
@@ -39,6 +46,7 @@ int main (int argc, char **argv) {
         case 0:
           /* If this option set a flag, do nothing else now. */
           if (long_options[option_index].flag != 0)
+            printf("flag set: %s\n", long_options[option_index].name);
             break;
           printf ("option %s", long_options[option_index].name);
           if (optarg)
@@ -46,24 +54,16 @@ int main (int argc, char **argv) {
           printf ("\n");
           break;
 
-        case 'a':
-          puts ("option -a\n");
+        case RDONLY:
+          printf("rdonly: %s\n", optarg);
           break;
 
-        case 'b':
-          puts ("option -b\n");
+        case WRONLY:
+          printf("wronly: %s\n", optarg);
           break;
 
-        case 'c':
-          printf ("option -c with value `%s'\n", optarg);
-          break;
-
-        case 'd':
-          printf ("option -d with value `%s'\n", optarg);
-          break;
-
-        case 'f':
-          printf ("option -f with value `%s'\n", optarg);
+        case RDWR:
+          printf("rdwr: %s\n", optarg);
           break;
 
         case '?':
