@@ -9,7 +9,13 @@
 int execute_command(command_data cmd_data);
 command_data parse_command(int argc, char **argv, int *opt);
 
+int stdinCopy, stdoutCopy, stderrCopy;
+
 void set_streams(int in, int out, int err) {
+  stdinCopy = dup(0);
+  stdoutCopy = dup(1);
+  stderrCopy = dup(2);
+  printf("stdin %d stdout %d\n", stdinCopy, stdoutCopy);
   dup2(g_fileDesc[in], STDIN_FILENO);
   dup2(g_fileDesc[out], STDOUT_FILENO);
   dup2(g_fileDesc[err], STDERR_FILENO);
@@ -76,6 +82,11 @@ int execute_command(command_data cmd_data) {
   }
   else {
     waitpid(pid, &status, 0);
+    dup2(stdinCopy, 0);
+    dup2(stdoutCopy, 1);
+    close(stdinCopy);
+    close(stdoutCopy);
+    close(stderrCopy);
     return WEXITSTATUS(status);
   }
 
