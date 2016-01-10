@@ -110,9 +110,5 @@ int main (int argc, char **argv) {
       putchar ('\n');
     }
 
-  char readChar;
-  printf("%d\n", g_currFileDesc);
-  read(g_fileDesc[g_currFileDesc - 1], &readChar, 1);
-  printf("%c\n", readChar);
   exit (0);
 }
