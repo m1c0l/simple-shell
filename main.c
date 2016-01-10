@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
+#include <fcntl.h>
+#include "filedesc.h"
 
 /* Identifiers for the command line options
  * Starts from 1 because flag arguments use 0 */
@@ -13,15 +15,7 @@ enum Options {
   ABORT
 };
 
-void wronly(char* filename) {
-  FILE *fp = fopen(filename, "w");
-  if(fp == NULL) {
-    fprintf(stderr, "wronly error\n");
-    exit(1);
-  }
-  fprintf(fp, "Writing to wronly file\n");
-  fclose(fp);
-}
+
 
 /* Flags */
 static int verbose_flag;
@@ -69,21 +63,12 @@ int main (int argc, char **argv) {
 
         case RDONLY:
           printf("rdonly: %s\n", optarg);
-          FILE *inFile = fopen(optarg, "r");
-          if (!inFile) {
-            fprintf(stderr, "Error opening file for input: %s", optarg);
-            exit(0);
-          }
-          int readChar;
-          while ((readChar = fgetc(inFile)) != EOF) {
-            printf("%c", readChar);
-          }
-          fclose(inFile);
+          openFile(optarg, O_RDONLY);
           break; 
 
         case WRONLY:
           printf("wronly: %s\n", optarg);
-          wronly(optarg);
+          openFile(optarg, O_WRONLY);
           break;
 
         case RDWR:
