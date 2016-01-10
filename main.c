@@ -93,8 +93,8 @@ int main (int argc, char **argv) {
         case COMMAND: {
             /* Find index of the next argument starting with "--" */
             int arg_count = 0;
-            for (int i = optind; i < argc && argv[i][0] != '-' &&
-                argv[i][1] != '-'; i++)
+            for (int i = optind; i < argc && !(argv[i][0] == '-' &&
+                argv[i][1] == '-'); i++)
               arg_count++;
 
             /* Need at least 4 arguments */
