@@ -9,7 +9,8 @@ enum Options {
   RDONLY = 1,
   WRONLY,
   RDWR,
-  COMMAND
+  COMMAND,
+  ABORT
 };
 
 void wronly(char* filename) {
@@ -24,7 +25,6 @@ void wronly(char* filename) {
 
 /* Flags */
 static int verbose_flag;
-static int abort_flag;
 
 int main (int argc, char **argv) {
   int c;
@@ -35,9 +35,9 @@ int main (int argc, char **argv) {
         {
           /* These options set a flag. */
           {"verbose", no_argument,       &verbose_flag, 1},
-          {"abort",   no_argument,       &abort_flag, 1},
           /* These options don’t set a flag.
              We distinguish them by their indices. */
+          {"abort",   no_argument,       0, ABORT},
           {"rdonly",  required_argument, 0, RDONLY},
           {"wronly",  required_argument, 0, WRONLY},
           {"rdwr",    required_argument, 0, RDWR},
@@ -133,6 +133,13 @@ int main (int argc, char **argv) {
             printf("err: %d\n", cmd_data.err);
             for (int i = 0; cmd_data.argv[i] != NULL; i++)
               printf("argv[%d]: %s\n", i, cmd_data.argv[i]);
+          }
+          break;
+
+        case ABORT:
+          {
+            int *p = 0;
+            *p = 0;
           }
           break;
 
