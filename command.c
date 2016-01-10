@@ -4,13 +4,21 @@
 #include <sys/wait.h>
 
 #include "command.h"
+#include "filedesc.h"
 
 int execute_command(command_data cmd_data);
 command_data parse_command(int argc, char **argv, int *opt);
 
+void set_streams(int in, int out, int err) {
+  dup2(g_fileDesc[in], STDIN_FILENO);
+  dup2(g_fileDesc[out], STDOUT_FILENO);
+  dup2(g_fileDesc[err], STDERR_FILENO);
+}
+
 int command(int argc, char **argv, int *opt) {
-  command_data cmd_data = parse_command(argc, argv, opt);
-  return execute_command(cmd_data);
+  command_data data = parse_command(argc, argv, opt);
+  set_streams(data.in, data.out, data.err);
+  return execute_command(data);
 }
 
 command_data parse_command(int argc, char **argv, int *opt) {
