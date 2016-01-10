@@ -14,8 +14,7 @@ c: command.o
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-main.c filedesc.c: filedesc.h
-
+main.c filedesc.c command.c: filedesc.h
 main.c command.c: command.h
 
 #main.o raymath.o: raymath.h
@@ -23,7 +22,13 @@ main.c command.c: command.h
 check: simpsh
 	./test.sh
 
-dist:
+targz = lab1-michaelli
+sources = Makefile main.c filedesc.c filedesc.h command.c command.h README
+
+dist: $(targz)
+
+$(targz): $(sources)
+	tar cf - --transform='s|^|$(targz)/|' $(sources) | gzip -9 > $@.tar.gz
 
 clean:
-	rm -f *.o *.tmp simpsh simsh.tar.gz
+	rm -rf *.o *.tmp $(targz) $(targz).tar.gz
