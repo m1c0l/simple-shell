@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=gnu99 -g -O2 -Wall -Wextra -Wno-unused-parameter
+CFLAGS = -std=gnu99 -g -Wall -Wextra -Wno-unused-parameter # -O2
 
 all: simpsh
 
@@ -17,7 +17,8 @@ $(obj_dir):
 
 #main.o raymath.o: raymath.h
 
-check:
+check: simpsh
+	./test.sh
 
 dist:
 
