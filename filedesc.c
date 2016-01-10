@@ -5,6 +5,9 @@
 #include <string.h>
 #include <errno.h>
 
+int g_fileDesc[100];
+int g_currFileDesc = 0;
+
 void openFile(char* filename, int oflag) {
   int fd = open(filename, oflag);
   if (fd == -1) {
