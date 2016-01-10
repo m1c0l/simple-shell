@@ -3,19 +3,20 @@ CFLAGS = -std=gnu99 -g -Wall -Wextra -Wno-unused-parameter # -O2
 
 all: simpsh
 
-objects = main.o filedesc.o
-obj_dir = obj
+objects = main.o filedesc.o command.o
 
 simpsh: $(objects)
 	$(CC) $(CFLAGS) -o $@ $(objects)
 
-%.o: %.c $(obj_dir)
+c: command.o
+	$(CC) $(CFLAGS) -o command $(objects)
+
+%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 main.c filedesc.c: filedesc.h
 
-$(obj_dir):
-	mkdir -p $@
+main.c command.c: command.h
 
 #main.o raymath.o: raymath.h
 
@@ -25,4 +26,4 @@ check: simpsh
 dist:
 
 clean:
-	rm -f */*.o *.tmp simsh.tar.gz
+	rm -f *.o *.tmp simpsh simsh.tar.gz

@@ -3,6 +3,7 @@
 #include <getopt.h>
 #include <fcntl.h>
 #include "filedesc.h"
+#include "command.h"
 
 /* Identifiers for the command line options
  * Starts from 1 because flag arguments use 0 */
@@ -76,48 +77,7 @@ int main (int argc, char **argv) {
           break;
 
         case COMMAND: {
-            /* Find index of the next argument starting with "--" */
-            int arg_count = 0;
-            for (int i = optind; i < argc && !(argv[i][0] == '-' &&
-                argv[i][1] == '-'); i++)
-              arg_count++;
-
-            /* Need at least 4 arguments */
-            if (arg_count < 4) {
-              fprintf(stderr, "Not enough arguments for --command\n");
-            }
-
-            struct {
-              int in;
-              int out;
-              int err;
-              char** argv;
-            } cmd_data;
-
-            /* first 3 arguments are input, output, and error */
-            cmd_data.in = atoi(argv[optind++]);
-            cmd_data.out = atoi(argv[optind++]);
-            cmd_data.err = atoi(argv[optind++]);
-
-            /* size of command's argv */
-            int argv_size = arg_count - 3;
-
-            /* allocate space for argv, with a null terminator */
-            cmd_data.argv = (char**)malloc(sizeof(char*) * (argv_size+1));
-            cmd_data.argv[argv_size] = NULL;
-
-            /* assign arguments to the command's argv */
-            for (int i = 0; i < argv_size; i++) {
-              cmd_data.argv[i] = argv[optind];
-              optind++;
-            }
-
-            /* print the command's data */
-            printf("in: %d\n", cmd_data.in);
-            printf("out: %d\n", cmd_data.out);
-            printf("err: %d\n", cmd_data.err);
-            for (int i = 0; cmd_data.argv[i] != NULL; i++)
-              printf("argv[%d]: %s\n", i, cmd_data.argv[i]);
+            command(argc, argv, &optind);
           }
           break;
 
