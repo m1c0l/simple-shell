@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <getopt.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include "filedesc.h"
 #include "command.h"
 
@@ -83,6 +84,7 @@ int main (int argc, char **argv) {
 
         case ABORT:
           {
+            // intentionally cause segfault
             int *p = 0;
             *p = 0;
           }
@@ -108,5 +110,9 @@ int main (int argc, char **argv) {
       putchar ('\n');
     }
 
+  char readChar;
+  printf("%d\n", g_currFileDesc - 1);
+  read(g_fileDesc[g_currFileDesc - 1], &readChar, 1);
+  printf("%c\n", readChar);
   exit (0);
 }
