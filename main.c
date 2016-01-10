@@ -21,8 +21,9 @@ void wronly(char* filename) {
   fclose(fp);
 }
 
-/* Flag set by ‘--verbose’. */
+/* Flags */
 static int verbose_flag;
+static int abort_flag;
 
 int main (int argc, char **argv) {
   int c;
@@ -33,7 +34,7 @@ int main (int argc, char **argv) {
         {
           /* These options set a flag. */
           {"verbose", no_argument,       &verbose_flag, 1},
-          {"abort",   no_argument,       &verbose_flag, 0},
+          {"abort",   no_argument,       &abort_flag, 1},
           /* These options don’t set a flag.
              We distinguish them by their indices. */
           {"rdonly",  required_argument, 0, RDONLY},
