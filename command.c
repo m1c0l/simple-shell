@@ -143,7 +143,7 @@ command_data parse_command(int argc, char **argv, int *opt) {
 
 int execute_command(command_data cmd_data) {
   int pid;
-  int status;
+  //int status;
   pid = fork();
   if (pid == -1) {
     fprintf(stderr, "Error forking child: %s\n", strerror(errno));
@@ -157,10 +157,14 @@ int execute_command(command_data cmd_data) {
     return 1;
   }
   else {
+    // Code for --wait; don't need for part 1a
+    /*
     if (waitpid(pid, &status, 0) == -1) {
       fprintf(stderr, "Error waiting for child: %s\n", strerror(errno));
       return 1;
     }
     return WEXITSTATUS(status);
+    */
+    return 0;
   }
 }
