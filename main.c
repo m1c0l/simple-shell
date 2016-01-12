@@ -72,18 +72,20 @@ int main (int argc, char **argv) {
           break;
 
         case RDONLY:
-        {
-          char *nextArg = argv[optind];
-          if (!(nextArg[0] == '-' && nextArg[1] == '-')) {
-            if (!commandReturn) {
-              commandReturn = 1;
+          if (optind < argc)
+          {
+            char *nextArg = argv[optind];
+            if (!(nextArg[0] == '-' && nextArg[1] == '-')) {
+              if (!commandReturn) {
+                commandReturn = 1;
+              }
             }
+            openFile(optarg, O_RDONLY);
           }
-          openFile(optarg, O_RDONLY);
-        }
           break; 
 
         case WRONLY:
+          if (optind < argc)
           {
             char *nextArg = argv[optind];
             if (!(nextArg[0] == '-' && nextArg[1] == '-')) {
