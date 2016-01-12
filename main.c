@@ -77,9 +77,8 @@ int main (int argc, char **argv) {
           printf("rdwr: %s\n", optarg);
           break;
 
-        case COMMAND: {
-            command(argc, argv, &optind);
-          }
+        case COMMAND:
+          command(argc, argv, &optind);
           break;
 
         case ABORT:

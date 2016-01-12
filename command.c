@@ -9,22 +9,36 @@
 int execute_command(command_data cmd_data);
 command_data parse_command(int argc, char **argv, int *opt);
 
-int stdinCopy, stdoutCopy, stderrCopy;
+struct {
+  int in;
+  int out;
+  int err;
+} stdcopy;
 
 void set_streams(int in, int out, int err) {
-  stdinCopy = dup(0);
-  stdoutCopy = dup(1);
-  stderrCopy = dup(2);
-  printf("stdin %d stdout %d\n", stdinCopy, stdoutCopy);
-  dup2(g_fileDesc[in], STDIN_FILENO);
-  dup2(g_fileDesc[out], STDOUT_FILENO);
-  dup2(g_fileDesc[err], STDERR_FILENO);
+  stdcopy.in = dup(0);
+  stdcopy.out = dup(1);
+  stdcopy.err = dup(2);
+  dup2(g_fileDesc[in], 0);
+  dup2(g_fileDesc[out], 1);
+  dup2(g_fileDesc[err], 2);
+}
+
+void reset_streams() {
+  dup2(stdcopy.in, 0);
+  dup2(stdcopy.out, 1);
+  dup2(stdcopy.err, 2);
+  close(stdcopy.out);
+  close(stdcopy.in);
+  close(stdcopy.err);
 }
 
 int command(int argc, char **argv, int *opt) {
   command_data data = parse_command(argc, argv, opt);
   set_streams(data.in, data.out, data.err);
-  return execute_command(data);
+  int ret = execute_command(data);
+  reset_streams();
+  return ret;
 }
 
 command_data parse_command(int argc, char **argv, int *opt) {
@@ -82,11 +96,6 @@ int execute_command(command_data cmd_data) {
   }
   else {
     waitpid(pid, &status, 0);
-    dup2(stdinCopy, 0);
-    dup2(stdoutCopy, 1);
-    close(stdinCopy);
-    close(stdoutCopy);
-    close(stderrCopy);
     return WEXITSTATUS(status);
   }
 
