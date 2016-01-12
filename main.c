@@ -28,6 +28,8 @@ int main (int argc, char **argv) {
   /* Flags */
   static int verbose_flag;
 
+  int commandReturn = 0;
+
   int c;
 
   while (1)
@@ -48,7 +50,7 @@ int main (int argc, char **argv) {
       /* getopt_long stores the option index here. */
       int option_index = 0;
 
-      c = getopt_long_only(argc, argv, "",
+      c = getopt_long(argc, argv, "",
                        long_options, &option_index);
       
       /* Detect the end of the options. */
@@ -90,7 +92,13 @@ int main (int argc, char **argv) {
           break;
 
         case COMMAND:
-          command(argc, argv, &optind);
+          { 
+            int ret;
+            ret = command(argc, argv, &optind);
+            if (ret > commandReturn) {
+              commandReturn = ret;
+            }
+          }
           break;
 
         case ABORT:
@@ -101,6 +109,13 @@ int main (int argc, char **argv) {
           }
           break;
 
+        case '?':
+          // code for unrecognized options
+          // fprintf(stderr, "Why did you enter an unknown option?! %s\n", long_options[option_index].name);
+          if (!commandReturn) {
+            commandReturn = 1;
+          }
+          break;
         default:
           // fprintf(stderr, "Unknown option %s, c = %d\n", long_options[option_index].name, c);
           break;
@@ -124,5 +139,5 @@ int main (int argc, char **argv) {
 
   endFileDesc(); // free file descriptor array
 
-  exit (0);
+  return commandReturn;
 }
