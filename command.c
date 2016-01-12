@@ -37,7 +37,7 @@ int command(int argc, char **argv, int *opt) {
   if (reset_streams() == -1) {
     return 1;
   }
-  free(data.argv);
+  free(data.argv); // malloc called in parse_command()
   return ret;
 }
 
