@@ -25,19 +25,36 @@ int command(int argc, char **argv, int *opt) {
   if (data.argv == NULL)
     return 1;
 
-  set_streams(data.in, data.out, data.err);
+  if (set_streams(data.in, data.out, data.err) == -1) {
+    return 1;
+  }
 
   int ret = execute_command(data);
   /* if the command fails, write an error to the command's stderr */
   if (ret)
     fprintf(stderr, "%s: %s\n", data.argv[0], strerror(errno));
 
-  reset_streams();
+  if (reset_streams() == -1) {
+    return 1;
+  }
   free(data.argv);
   return ret;
 }
 
 int set_streams(int in, int out, int err) {
+  if (in > g_currFileDesc) {
+    fprintf(stderr, "Bad file descriptor: %d\n", in);
+    return -1;
+  }
+  if (out > g_currFileDesc) {
+    fprintf(stderr, "Bad file descriptor: %d\n", out);
+    return -1;
+  }
+  if (err > g_currFileDesc) {
+    fprintf(stderr, "Bad file descriptor: %d\n", err);
+    return -1;
+  }
+
   stdcopy.in = dup(0);
   stdcopy.out = dup(1);
   stdcopy.err = dup(2);
