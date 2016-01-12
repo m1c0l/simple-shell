@@ -10,7 +10,8 @@
  * Starts from 1 because flag arguments use 0 */
 
 enum Options {
-  RDONLY = 1,
+  VERBOSE = 1,
+  RDONLY,
   WRONLY,
   RDWR,
   COMMAND,
@@ -30,7 +31,7 @@ int main (int argc, char **argv) {
       static struct option long_options[] =
         {
           /* These options set a flag. */
-          {"verbose", no_argument,       &verbose_flag, 1},
+          {"verbose", no_argument,       0, VERBOSE},
           /* These options don’t set a flag.
              We distinguish them by their indices. */
           {"abort",   no_argument,       0, ABORT},
@@ -45,36 +46,43 @@ int main (int argc, char **argv) {
 
       c = getopt_long_only(argc, argv, "",
                        long_options, &option_index);
-
+      
       /* Detect the end of the options. */
       if (c == -1)
         break;
 
+      if (verbose_flag) {
+        // printf("optind: %d %s\n", optind, argv[optind]);
+        printf("--%s", long_options[option_index].name);
+        if (optarg != NULL) {
+          printf(" %s", optarg);
+        }
+        for (int i = optind; i < argc &&
+            !(argv[i][0] == '-' && argv[i][1] == '-'); i++) {
+          printf(" %s", argv[i]);
+        }
+        printf("\n");
+        fflush(stdout);
+      }
+
       switch (c)
         {
-        case 0:
-          /* If this option set a flag, do nothing else now. */
-          if (long_options[option_index].flag != 0)
-            printf("flag set: %s\n", long_options[option_index].name);
-            break;
-          printf ("option %s", long_options[option_index].name);
-          if (optarg)
-            printf (" with arg %s", optarg);
-          printf ("\n");
+        case VERBOSE:
+          verbose_flag = 1;
           break;
 
         case RDONLY:
-          printf("rdonly: %s\n", optarg);
+          // printf("rdonly: %s\n", optarg);
           openFile(optarg, O_RDONLY);
           break; 
 
         case WRONLY:
-          printf("wronly: %s\n", optarg);
+          // printf("wronly: %s\n", optarg);
           openFile(optarg, O_WRONLY);
           break;
 
         case RDWR:
-          printf("rdwr: %s\n", optarg);
+          // printf("rdwr: %s\n", optarg);
           break;
 
         case COMMAND:
@@ -97,8 +105,8 @@ int main (int argc, char **argv) {
   /* Instead of reporting ‘--verbose’
      and ‘--brief’ as they are encountered,
      we report the final status resulting from them. */
-  if (verbose_flag)
-    puts ("verbose flag is set");
+  // if (verbose_flag)
+  //   puts ("verbose flag is set");
 
   /* Print any remaining command line arguments (not options). */
   if (optind < argc)

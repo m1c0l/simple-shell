@@ -16,5 +16,5 @@ void openFile(char* filename, int oflag) {
   }
   g_fileDesc[g_currFileDesc] = fd;
   g_currFileDesc++;
-  printf("fd: %d\n", fd);
+  // printf("fd: %d\n", fd);
 }
