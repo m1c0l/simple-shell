@@ -76,13 +76,30 @@ int main (int argc, char **argv) {
           break;
 
         case RDONLY:
+        {
+          char *nextArg = argv[optind];
+          if (!(nextArg[0] == '-' && nextArg[1] == '-')) {
+            if (!commandReturn) {
+              commandReturn = 1;
+            }
+          }
           // printf("rdonly: %s\n", optarg);
           openFile(optarg, O_RDONLY);
+        }
           break; 
 
         case WRONLY:
-          // printf("wronly: %s\n", optarg);
-          openFile(optarg, O_WRONLY);
+          {
+            char *nextArg = argv[optind];
+            if (!(nextArg[0] == '-' && nextArg[1] == '-')) {
+              fprintf(stderr, "Extra argument for %s: %s\n", long_options[option_index].name, argv[optind]);
+              if (!commandReturn) {
+                commandReturn = 1;
+              }
+            }
+            // printf("wronly: %s\n", optarg);
+            openFile(optarg, O_WRONLY);
+          }
           break;
 
         case RDWR:
