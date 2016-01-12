@@ -22,6 +22,11 @@ main.c command.c: command.h
 check: clean simpsh
 	./test.sh
 
+check1: clean simpsh
+	./piazza-tests.sh
+
+checkall: check check1
+
 targz = lab1-michaelli
 sources = Makefile main.c filedesc.c filedesc.h command.c command.h README
 
