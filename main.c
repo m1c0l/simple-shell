@@ -6,24 +6,26 @@
 #include "filedesc.h"
 #include "command.h"
 
-/* Identifiers for the command line options
- * Starts from 1 because flag arguments use 0 */
 
-enum Options {
-  VERBOSE = 1,
-  RDONLY,
-  WRONLY,
-  RDWR,
-  COMMAND,
-  ABORT
-};
-
-
-
-/* Flags */
-static int verbose_flag;
 
 int main (int argc, char **argv) {
+  /* Identifiers for the command line options
+   * Starts from 1 because flag arguments use 0 */
+
+  enum Options {
+    VERBOSE = 1,
+    RDONLY,
+    WRONLY,
+    RDWR,
+    COMMAND,
+    ABORT
+  };
+
+
+
+  /* Flags */
+  static int verbose_flag;
+
   int c;
 
   while (1)
@@ -98,7 +100,8 @@ int main (int argc, char **argv) {
           break;
 
         default:
-          abort ();
+          // fprintf(stderr, "Unknown option %s, c = %d\n", long_options[option_index].name, c);
+          break;
         }
     }
 
