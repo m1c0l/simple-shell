@@ -82,7 +82,14 @@ int main (int argc, char **argv) {
               }
             }
           }
-          openFile(optarg, O_RDONLY);
+          {
+            int openStatus = openFile(optarg, O_RDONLY);
+            if (openStatus) {
+              if (!commandReturn) {
+                  commandReturn = 1;
+                }
+            }
+          }
           break; 
 
         case WRONLY:
@@ -96,7 +103,14 @@ int main (int argc, char **argv) {
               }
             }
           }
-          openFile(optarg, O_WRONLY);
+          {
+            int openStatus = openFile(optarg, O_WRONLY);
+            if (openStatus) {
+              if (!commandReturn) {
+                  commandReturn = 1;
+                }
+            }
+          }
           break;
 
         case RDWR:
