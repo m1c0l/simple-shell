@@ -9,6 +9,8 @@
 
 
 int main (int argc, char **argv) {
+  initFileDesc(); // allocate file descriptor array
+
   /* Identifiers for the command line options
    * Starts from 1 because flag arguments use 0 */
 
@@ -126,6 +128,8 @@ int main (int argc, char **argv) {
           break;
         }
     }
+
+  endFileDesc(); // free file descriptor array
 
   return commandReturn;
 }
