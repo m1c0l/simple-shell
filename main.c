@@ -22,8 +22,6 @@ int main (int argc, char **argv) {
   };
 
 
-
-  /* Flags */
   static int verbose_flag;
 
   int commandReturn = 0;
@@ -34,10 +32,7 @@ int main (int argc, char **argv) {
     {
       static struct option long_options[] =
         {
-          /* These options set a flag. */
           {"verbose", no_argument,       0, VERBOSE},
-          /* These options don’t set a flag.
-             We distinguish them by their indices. */
           {"abort",   no_argument,       0, ABORT},
           {"rdonly",  required_argument, 0, RDONLY},
           {"wronly",  required_argument, 0, WRONLY},
@@ -56,7 +51,6 @@ int main (int argc, char **argv) {
         break;
 
       if (verbose_flag) {
-        // printf("optind: %d %s\n", optind, argv[optind]);
         printf("--%s", long_options[option_index].name);
         if (optarg != NULL) {
           printf(" %s", optarg);
@@ -83,7 +77,6 @@ int main (int argc, char **argv) {
               commandReturn = 1;
             }
           }
-          // printf("rdonly: %s\n", optarg);
           openFile(optarg, O_RDONLY);
         }
           break; 
@@ -97,13 +90,12 @@ int main (int argc, char **argv) {
                 commandReturn = 1;
               }
             }
-            // printf("wronly: %s\n", optarg);
             openFile(optarg, O_WRONLY);
           }
           break;
 
         case RDWR:
-          // printf("rdwr: %s\n", optarg);
+          
           break;
 
         case COMMAND:
@@ -126,30 +118,13 @@ int main (int argc, char **argv) {
 
         case '?':
           // code for unrecognized options
-          // fprintf(stderr, "Why did you enter an unknown option?! %s\n", long_options[option_index].name);
           if (!commandReturn) {
             commandReturn = 1;
           }
           break;
         default:
-          // fprintf(stderr, "Unknown option %s, c = %d\n", long_options[option_index].name, c);
           break;
         }
-    }
-
-  /* Instead of reporting ‘--verbose’
-     and ‘--brief’ as they are encountered,
-     we report the final status resulting from them. */
-  // if (verbose_flag)
-  //   puts ("verbose flag is set");
-
-  /* Print any remaining command line arguments (not options). */
-  if (optind < argc)
-    {
-      printf ("non-option ARGV-elements: ");
-      while (optind < argc)
-        printf ("%s ", argv[optind++]);
-      putchar ('\n');
     }
 
   return commandReturn;
