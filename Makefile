@@ -19,7 +19,7 @@ main.c command.c: command.h
 
 #main.o raymath.o: raymath.h
 
-check: simpsh
+check: clean simpsh
 	./test.sh
 
 targz = lab1-michaelli
