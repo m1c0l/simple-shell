@@ -33,28 +33,28 @@ function should_succeed() {
   fi
 }
 
-tmp_file=$(mktemp)
-tmp_file2=$(mktemp)
+tmp=$(mktemp)
+tmp2=$(mktemp)
 
 function delete_tmp() {
-  rm $tmp_file $tmp_file2
+  rm $tmp $tmp2
 }
 
-echo "some text" > $tmp_file
-output=$( ./simpsh --rdonly $tmp_file --verbose --wronly $tmp_file \
-  --command 0 1 1 sort --wronly $tmp_file )
-test "$output" = "$(printf -- "--wronly $tmp_file\n--command 0 1 1 sort\n\
---wronly $tmp_file")"
+echo "some text" > $tmp
+output=$( ./simpsh --rdonly $tmp --verbose --wronly $tmp \
+  --command 0 1 1 sort --wronly $tmp )
+test "$output" = "$(printf -- "--wronly $tmp\n--command 0 1 1 sort\n\
+--wronly $tmp")"
 should_succeed "verbose has the correct output"
 
 
-output=$(./simpsh --rdonly $tmp_file --wronly $tmp_file2 --command 0 -1 1 2>&1)
+output=$(./simpsh --rdonly $tmp --wronly $tmp2 --command 0 -1 1 2>&1)
 should_fail "negative file descriptors should fail"
 [[ "$output" =~ "file descriptor" ]]
 should_succeed "negative file descriptors should report and error"
 
 
-output=$(./simpsh --rdonly $tmp_file --wronly $tmp_file2 --command 0 aa 1 2>&1)
+output=$(./simpsh --rdonly $tmp --wronly $tmp2 --command 0 aa 1 2>&1)
 should_fail "nonnumber file descriptors should fail"
 [[ "$output" =~ "file descriptor" ]]
 should_succeed "nonnumber file descriptors should report and error"
