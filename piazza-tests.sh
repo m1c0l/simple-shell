@@ -52,12 +52,12 @@ should_fail "using a non existent file descriptor reports an error"
 
 > $tmp
 > $tmp2
-(./simpsh \
+output=$(./simpsh \
   --verbose \
   --rdonly $tmp \
   --wronly $tmp2 \
-  --command 1 2 3 echo foo 2>&1 \
-  --command 0 1 1 echo foo ) 2>/dev/null 1>/dev/null
+  --command 1 2 3 echo foo \
+  --command 0 1 1 echo foo 2>&1)
 
 grep foo $tmp2 > /dev/null
 should_succeed "commands after failing commands should succeed"

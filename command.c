@@ -8,6 +8,7 @@
 
 #include "command.h"
 #include "filedesc.h"
+#include "util.h"
 
 int execute_command(command_data cmd_data);
 command_data parse_command(int argc, char **argv, int *opt);
@@ -73,8 +74,7 @@ command_data parse_command(int argc, char **argv, int *opt) {
   /* Find index of the next argument starting with "--" */
   int arg_count = 0;
   int opt_ind = *opt;
-  for (int i = opt_ind; i < argc &&
-      !(argv[i][0] == '-' && argv[i][1] == '-'); i++) {
+  for (int i = opt_ind; i < argc && is_not_option(argv[i]); i++) {
     arg_count++;
   }
 

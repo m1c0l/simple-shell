@@ -4,7 +4,8 @@ OPTIMIZE = -g # -O2
 
 all: simpsh
 
-SOURCES = main.c filedesc.c command.c
+SOURCES = main.c filedesc.c command.c util.c
+HEADERS = filedesc.h command.h util.h
 OBJECTS = $(subst .c,.o,$(SOURCES))
 
 simpsh: $(OBJECTS)
@@ -16,7 +17,7 @@ simpsh: $(OBJECTS)
 
 main.c filedesc.c command.c: filedesc.h
 main.c command.c: command.h
-
+main.c command.c util.c: util.h
 
 check: test piazza
 
@@ -28,7 +29,7 @@ piazza: clean simpsh
 
 
 DISTDIR = lab1-michaelli
-DIST_FILES = Makefile $(SOURCES) filedesc.h command.h README $(TESTS)
+DIST_FILES = Makefile README $(SOURCES) $(HEADERS) $(TESTS)
 
 dist: $(DISTDIR)
 

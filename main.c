@@ -3,8 +3,10 @@
 #include <getopt.h>
 #include <fcntl.h>
 #include <unistd.h>
+
 #include "filedesc.h"
 #include "command.h"
+#include "util.h"
 
 
 
@@ -57,8 +59,7 @@ int main (int argc, char **argv) {
         if (optarg != NULL) {
           printf(" %s", optarg);
         }
-        for (int i = optind; i < argc &&
-            !(argv[i][0] == '-' && argv[i][1] == '-'); i++) {
+        for (int i = optind; i < argc && is_not_option(argv[i]); i++) {
           printf(" %s", argv[i]);
         }
         printf("\n");
@@ -75,7 +76,7 @@ int main (int argc, char **argv) {
           if (optind < argc)
           {
             char *nextArg = argv[optind];
-            if (!(nextArg[0] == '-' && nextArg[1] == '-')) {
+            if (is_not_option(nextArg)) {
               fprintf(stderr, "Extra argument for %s: %s\n", long_options[option_index].name, argv[optind]);
               if (!commandReturn) {
                 commandReturn = 1;
@@ -96,7 +97,7 @@ int main (int argc, char **argv) {
           if (optind < argc)
           {
             char *nextArg = argv[optind];
-            if (!(nextArg[0] == '-' && nextArg[1] == '-')) {
+            if (is_not_option(nextArg)) {
               fprintf(stderr, "Extra argument for %s: %s\n", long_options[option_index].name, argv[optind]);
               if (!commandReturn) {
                 commandReturn = 1;
