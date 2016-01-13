@@ -15,8 +15,10 @@ function should_fail() {
   if [ $result -eq 0 ]; then
     echo "FAILURE"
     all_passed=false
+    return 1
   else
     echo
+    return 0
   fi
 }
 
@@ -28,14 +30,28 @@ function should_succeed() {
   if [ $result -ne 0 ]; then
     echo "FAILURE"
     all_passed=false
+    return 1
   else
     echo
+    return 0
   fi
 }
+
+# Valgrind
+function check_valgrind() {
+  valgrind="valgrind --leak-check=full --show-leak-kinds=all"
+  simpsh="$1"
+  output=$($valgrind $simpsh 2>&1)
+  [[ "$output" =~ "no leaks are possible" ]]
+  return $?
+}
+
 
 tmp=$(mktemp)
 tmp2=$(mktemp)
 tmp3=$(mktemp)
+
+
 
 echo "some text" > $tmp
 output=$( ./simpsh --rdonly $tmp --verbose --wronly $tmp \
@@ -73,6 +89,25 @@ test "$(cat $tmp3)" = "$tmp"
 should_fail "stderr should not be in stdout file"
 [[ "$(cat $tmp2)" =~ "No such file or directory" ]]
 should_fail "stdout should not be in stderr file"
+
+
+check_valgrind "./simpsh --rdonly $tmp --wronly $tmp2 --wronly $tmp3 --verbose \
+  --command 0 1 2 cat --rdonly in --command 0 1 2 ls -l --wronly out"
+should_succeed "Valgrind reports no memory leaks"
+
+check_valgrind "./simpsh --rdonly $tmp --wronly $tmp2 --wronly $tmp3 --verbose \
+  --command 0 1 2 cat --rdonly in --command sd0 1 2 ls -l --wronly out"
+should_succeed "No memory leaks on bad file descriptor"
+
+check_valgrind "./simpsh --rdonly $tmp --wronly $tmp2 --wronly $tmp3 --verbose \
+  --command 0 1 2 cat --rdonly in --command 1 1 2 ls -l --wronly out"
+should_succeed "No memory leaks when reading write-only file"
+
+check_valgrind "./simpsh --rdonly $tmp --wronly $tmp2 --command 0 1"
+should_succeed "No memory leaks when not enough --command args"
+
+check_valgrind "./simpsh --rdonly $tmp --wronly $tmp2 $tmp3"
+should_succeed "No memory leaks when too many arguments to --wronly"
 
 
 

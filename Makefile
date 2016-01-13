@@ -39,4 +39,4 @@ $(DISTDIR): $(DIST_FILES)
 clean:
 	rm -rf simpsh *.o *.tmp $(DISTDIR) $(DISTDIR).tar.gz
 
-.PHONY: all check dist clean
+.PHONY: all check dist clean test
