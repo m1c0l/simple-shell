@@ -1,0 +1,14 @@
+CS111 Lab 1a
+
+Michael Li
+Richard Sun
+
+Code is currently a little sloppy; we will refactor it soon.
+We do not close files opened with --rdonly and --wronly because they return -1
+somtimes. We do close opened files that we manage internally, and valgrind
+reports no memory leaks.
+
+We tried to modularize major functionality and create a simple interface. Our
+code is set up so that it should be easy to change to add additional
+functionality as we need in the next parts of the lab.
+
