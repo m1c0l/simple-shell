@@ -20,6 +20,7 @@ int command(int argc, char **argv, int *opt) {
     return 1;
 
   if (set_streams(data.in, data.out, data.err) == -1) {
+    reset_streams();
     return 1;
   }
 
