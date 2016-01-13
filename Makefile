@@ -7,6 +7,7 @@ all: simpsh
 SOURCES = main.c filedesc.c command.c util.c
 HEADERS = filedesc.h command.h util.h
 OBJECTS = $(subst .c,.o,$(SOURCES))
+TESTS = test.sh
 
 simpsh: $(OBJECTS)
 	$(CC) $(CFLAGS) $(OPTIMIZE) -o $@ $(OBJECTS)
@@ -21,11 +22,8 @@ main.c command.c util.c: util.h
 
 check: test piazza
 
-test: clean simpsh
+test: clean
 	./test.sh
-
-piazza: clean simpsh
-	./piazza-tests.sh
 
 
 DISTDIR = lab1-michaelli
