@@ -13,12 +13,6 @@ command_data parse_command(int argc, char **argv, int *opt);
 int set_streams(int in, int out, int err);
 int reset_streams();
 
-struct {
-  int in;
-  int out;
-  int err;
-} stdcopy;
-
 int command(int argc, char **argv, int *opt) {
   command_data data = parse_command(argc, argv, opt);
   /* error parsing command */
@@ -50,44 +44,16 @@ int set_streams(int in, int out, int err) {
   if (infile.fd == -1 || outfile.fd == -1 || errfile.fd == -1)
     return -1;
 
-  stdcopy.in = dup(0);
-  stdcopy.out = dup(1);
-  stdcopy.err = dup(2);
-  if (stdcopy.in == -1 || stdcopy.out == -1 || stdcopy.err == -1) {
-    fprintf(stderr, "Error duplicating file descriptor: %s\n", strerror(errno));
-    return -1;
-  }
 
   if ((dup2(infile.fd, 0) == -1) ||
       (dup2(outfile.fd, 1) == -1) ||
       (dup2(errfile.fd, 2) == -1)) {
-    /* use the copied stderr in case it was already replaced */
-    fprintf(fdopen(stdcopy.err, "w"),
+    fprintf(getStderrFile(),
         "Error duplicating file descriptor: %s\n", strerror(errno));
     return -1;
   }
   return 0;
 }
-
-int reset_streams() {
-  if ((dup2(stdcopy.in, 0) == -1) ||
-      (dup2(stdcopy.out, 1) == -1) ||
-      (dup2(stdcopy.err, 2) == -1)) {
-    /* use the copied stderr in case the reset fails */
-    fprintf(fdopen(stdcopy.err, "w"),
-        "Error duplicating file descriptor: %s\n", strerror(errno));
-    return -1;
-  }
-
-  if ((close(stdcopy.in) == -1) ||
-      (close(stdcopy.out) == -1) ||
-      (close(stdcopy.err) == -1)) {
-    fprintf(stderr, "Error closing file: %s\n", strerror(errno));
-    return -1;
-  }
-  return 0;
-}
-
 
 command_data parse_command(int argc, char **argv, int *opt) {
   /* Find index of the next argument starting with "--" */
