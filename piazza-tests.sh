@@ -8,7 +8,7 @@ fi
 function should_fail() {
   result=$?
 
-  echo -n "==> $1 ($(caller | grep -oE '[0-9]+'))"
+  echo -n "==> $1 ($(caller))"
 
   if [ $result -lt 1 ]; then
     echo "FAILURE"
@@ -22,7 +22,7 @@ function should_fail() {
 function should_succeed() {
   result=$?
 
-  echo -n "==> $1 ($(caller | grep -oE '[0-9]+'))"
+  echo -n "==> $1 ($(caller))"
 
   if [ $result -gt 0 ]; then
     echo "FAILURE"
@@ -50,7 +50,7 @@ should_fail "does not report file that exists"
 
 
 ./simpsh --verbose --command 1 2 3 echo foo 2>/dev/null >&2
-should_fail "using a non existent file descriptor should report the error"
+should_fail "using a non existent file descriptor reports an error"
 
 
 > $tmp_file
