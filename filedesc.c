@@ -41,6 +41,7 @@ void endFileDesc() {
       (close(stdcopy.err) == -1)) {
     fprintf(stderr, "Error closing file: %s\n", strerror(errno));
   }
+  fclose(stdcopy.errFile);
 }
 
 int openFile(char* filename, int oflag) {
