@@ -56,6 +56,10 @@ should_fail "nonnumber file descriptors should fail"
 [[ "$output" =~ "file descriptor" ]]
 should_succeed "nonnumber file descriptors should report and error"
 
+output=$(./simpsh --rdonly $tmp --wronly $tmp2 --command 0 1a 1 2>&1)
+should_fail "nonnumber file descriptors should fail"
+[[ "$output" =~ "file descriptor" ]]
+should_succeed "nonnumber file descriptors should report and error"
 
 random="reiujfsdkf"
 output=$(./simpsh --rdonly $tmp --wronly $tmp2 --wronly $tmp3 \
