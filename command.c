@@ -50,8 +50,9 @@ int set_streams(int in, int out, int err) {
         "File not opened with read permissions: %d\n", in);
     return -1;
   }
-  /* Error if outfile or errfile is read-only */
-  if ((outfile.oflag | errfile.oflag) & O_RDONLY) {
+  /* Error if outfile or errfile doesn't have write permission */
+  if (!(outfile.oflag & (O_WRONLY|O_RDWR)) ||
+      !(errfile.oflag & (O_WRONLY|O_RDWR))) {
     fprintf(getStderrFile(),
         "File not opened with write permissions: %d\n", in);
     return -1;

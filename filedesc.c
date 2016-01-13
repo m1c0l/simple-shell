@@ -68,7 +68,7 @@ int openFile(char* filename, int oflag) {
 
 file getFile(int index) {
   if (index > currFileDesc) {
-    fprintf(stderr, "Bad file descriptor: %d\n", index);
+    fprintf(stdcopy.errFile, "Bad file descriptor: %d\n", index);
     file bad = { .fd = -1, .oflag = 0 };
     return bad;
   }
