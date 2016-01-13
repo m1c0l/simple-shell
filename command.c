@@ -4,6 +4,7 @@
 #include <sys/wait.h>
 #include <string.h>
 #include <errno.h>
+#include <fcntl.h>
 
 #include "command.h"
 #include "filedesc.h"
@@ -11,7 +12,6 @@
 int execute_command(command_data cmd_data);
 command_data parse_command(int argc, char **argv, int *opt);
 int set_streams(int in, int out, int err);
-int reset_streams();
 
 int command(int argc, char **argv, int *opt) {
   command_data data = parse_command(argc, argv, opt);
@@ -44,6 +44,18 @@ int set_streams(int in, int out, int err) {
   if (infile.fd == -1 || outfile.fd == -1 || errfile.fd == -1)
     return -1;
 
+  /* Error if infile is write-only */
+  if (infile.oflag & O_WRONLY) {
+    fprintf(getStderrFile(),
+        "File not opened with read permissions: %d\n", in);
+    return -1;
+  }
+  /* Error if outfile or errfile is read-only */
+  if ((outfile.oflag | errfile.oflag) & O_RDONLY) {
+    fprintf(getStderrFile(),
+        "File not opened with write permissions: %d\n", in);
+    return -1;
+  }
 
   if ((dup2(infile.fd, 0) == -1) ||
       (dup2(outfile.fd, 1) == -1) ||
