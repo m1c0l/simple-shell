@@ -49,7 +49,7 @@ should_succeed "reports missing file";
 should_fail "does not report file that exists"
 
 
-./simpsh --verbose --command 1 2 3 echo foo 2&>1
+./simpsh --verbose --command 1 2 3 echo foo 2>/dev/null >&2
 should_fail "using a non existent file descriptor should report the error"
 
 
