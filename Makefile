@@ -22,7 +22,9 @@ main.c command.c util.c: util.h
 
 TESTS = test.sh #piazza-tests.sh
 check: clean simpsh
-	for test in $(TESTS); do ./$$test; done
+	for test in $(TESTS); do \
+		./$$test || exit; \
+	done
 
 
 DISTDIR = lab1-michaelli
