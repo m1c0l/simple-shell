@@ -1,39 +1,42 @@
 CC = gcc
-CFLAGS = -std=gnu99 -g -Wall -Wextra -Wno-unused-parameter # -O2
+CFLAGS = -std=gnu99 -Wall -Wextra -Wno-unused-parameter
+OPTIMIZE = -g # -O2
 
 all: simpsh
 
-objects = main.o filedesc.o command.o
+SOURCES = main.c filedesc.c command.c
+OBJECTS = $(subst .c,.o,$(SOURCES))
 
-simpsh: $(objects)
-	$(CC) $(CFLAGS) -o $@ $(objects)
-
-c: command.o
-	$(CC) $(CFLAGS) -o command $(objects)
+simpsh: $(OBJECTS)
+	$(CC) $(CFLAGS) $(OPTIMIZE) -o $@ $(OBJECTS)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+
 main.c filedesc.c command.c: filedesc.h
 main.c command.c: command.h
 
-#main.o raymath.o: raymath.h
 
-check: clean simpsh
+check: test piazza
+
+test: clean simpsh
 	./test.sh
 
 piazza: clean simpsh
 	./piazza-tests.sh
 
-checkall: check piazza
 
-targz = lab1-michaelli
-sources = Makefile main.c filedesc.c filedesc.h command.c command.h README
+DISTDIR = lab1-michaelli
+DIST_FILES = Makefile $(SOURCES) filedesc.h command.h README $(TESTS)
 
-dist: $(targz)
+dist: $(DISTDIR)
 
-$(targz): $(sources)
-	tar cf - --transform='s|^|$(targz)/|' $(sources) | gzip -9 > $@.tar.gz
+$(DISTDIR): $(DIST_FILES)
+	tar cf - --transform='s|^|$(DISTDIR)/|' $(DIST_FILES) | gzip -9 > $@.tar.gz
+
 
 clean:
-	rm -rf *.o *.tmp $(targz) $(targz).tar.gz
+	rm -rf *.o *.tmp $(DISTDIR) $(DISTDIR).tar.gz
+
+.PHONY: all check dist clean
