@@ -71,6 +71,31 @@ int set_streams(int in, int out, int err) {
   return 0;
 }
 
+long get_file_desc(char *str) {
+  char *endptr;
+  long val;
+  val = strtol(str, &endptr, 10);
+  if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
+          || (errno != 0 && val == 0)) { // out of range
+      fprintf(stderr, "Bad file descriptor %s\n", str);
+      perror("strtol");
+      return -1;
+  }
+  if (endptr == str) { // no digits found
+      fprintf(stderr, "Bad file descriptor: no digits found in %s\n", str);
+      return -1;
+  }
+  if (*endptr != '\0') { // letters found after #
+      fprintf(stderr, "Bad file descriptor: letters found in %s\n", str);
+      return -1;
+  }
+  if (val < 0) { // negative fd
+    fprintf(stderr, "Bad file descriptor: negative # in %s\n", str);
+    return -1;
+  }
+  return val;
+}
+
 command_data parse_command(int argc, char **argv, int *opt) {
   /* Find index of the next argument starting with "--" */
   int arg_count = 0;
@@ -90,85 +115,26 @@ command_data parse_command(int argc, char **argv, int *opt) {
   }
 
   /* first 3 arguments are input, output, and error */
-  char *endptr;
-  char *str = argv[opt_ind++];
-  long val;
-  val = strtol(str, &endptr, 10);
-  if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
-          || (errno != 0 && val == 0)) { // out of range
-      fprintf(stderr, "Bad file descriptor\n");
-      cmd_data.argv = NULL;
-      return cmd_data;
-  }
-  if (endptr == str) { // no digits found
-      fprintf(stderr, "Bad file descriptor\n");
-      cmd_data.argv = NULL;
-      return cmd_data;
-  }
-  if (*endptr != '\0') { // letters found after #
-      fprintf(stderr, "Bad file descriptor\n");
-      cmd_data.argv = NULL;
-      return cmd_data;
-  }
-  if (val < 0) { // negative fd
-    fprintf(stderr, "Bad file descriptor\n");
+  int fd_number = get_file_desc(argv[opt_ind++]);
+  if (fd_number == -1) {
     cmd_data.argv = NULL;
     return cmd_data;
   }
-  cmd_data.in = val;
+  cmd_data.in = fd_number;
 
-
-  str = argv[opt_ind++];
-  val = strtol(str, &endptr, 10);
-  if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
-          || (errno != 0 && val == 0)) {
-      fprintf(stderr, "Bad file descriptor\n");
-      cmd_data.argv = NULL;
-      return cmd_data;
-  }
-  if (endptr == str) {
-      fprintf(stderr, "Bad file descriptor\n");
-      cmd_data.argv = NULL;
-      return cmd_data;
-  }
-  if (*endptr != '\0') {
-      fprintf(stderr, "Bad file descriptor\n");
-      cmd_data.argv = NULL;
-      return cmd_data;
-  }
-  if (val < 0) {
-    fprintf(stderr, "Bad file descriptor\n");
+  fd_number = get_file_desc(argv[opt_ind++]);
+  if (fd_number == -1) {
     cmd_data.argv = NULL;
     return cmd_data;
   }
-  cmd_data.out = val;
+  cmd_data.out = fd_number;
 
-
-  str = argv[opt_ind++];
-  val = strtol(str, &endptr, 10);
-  if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
-          || (errno != 0 && val == 0)) {
-      fprintf(stderr, "Bad file descriptor\n");
-      cmd_data.argv = NULL;
-      return cmd_data;
-  }
-  if (endptr == str) {
-      fprintf(stderr, "Bad file descriptor\n");
-      cmd_data.argv = NULL;
-      return cmd_data;
-  }
-  if (*endptr != '\0') {
-      fprintf(stderr, "Bad file descriptor\n");
-      cmd_data.argv = NULL;
-      return cmd_data;
-  }
-  if (val < 0) {
-    fprintf(stderr, "Bad file descriptor\n");
+  fd_number = get_file_desc(argv[opt_ind++]);
+  if (fd_number == -1) {
     cmd_data.argv = NULL;
     return cmd_data;
   }
-  cmd_data.err = val;
-
+  cmd_data.err = fd_number;
   /* size of command's argv */
   int argv_size = arg_count - 3;
 
