@@ -96,17 +96,17 @@ command_data parse_command(int argc, char **argv, int *opt) {
   val = strtol(str, &endptr, 10);
   if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
           || (errno != 0 && val == 0)) {
-      perror("strtol");
+      fprintf(stderr, "Bad file descriptor\n");
       cmd_data.argv = NULL;
       return cmd_data;
   }
   if (endptr == str) {
-      fprintf(stderr, "No digits were found\n");
+      fprintf(stderr, "Bad file descriptor\n");
       cmd_data.argv = NULL;
       return cmd_data;
   }
   if (*endptr != '\0') {
-      printf("Further characters after number: %s\n", endptr);
+      printf("Bad file descriptor\n");
       cmd_data.argv = NULL;
       return cmd_data;
   }
@@ -117,17 +117,17 @@ command_data parse_command(int argc, char **argv, int *opt) {
   val = strtol(str, &endptr, 10);
   if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
           || (errno != 0 && val == 0)) {
-      perror("strtol");
+      fprintf(stderr, "Bad file descriptor\n");
       cmd_data.argv = NULL;
       return cmd_data;
   }
   if (endptr == str) {
-      fprintf(stderr, "No digits were found\n");
+      fprintf(stderr, "Bad file descriptor\n");
       cmd_data.argv = NULL;
       return cmd_data;
   }
   if (*endptr != '\0') {
-      printf("Further characters after number: %s\n", endptr);
+      printf("Bad file descriptor\n");
       cmd_data.argv = NULL;
       return cmd_data;
   }
@@ -138,17 +138,17 @@ command_data parse_command(int argc, char **argv, int *opt) {
   val = strtol(str, &endptr, 10);
   if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
           || (errno != 0 && val == 0)) {
-      perror("strtol");
+      fprintf(stderr, "Bad file descriptor\n");
       cmd_data.argv = NULL;
       return cmd_data;
   }
   if (endptr == str) {
-      fprintf(stderr, "No digits were found\n");
+      fprintf(stderr, "Bad file descriptor\n");
       cmd_data.argv = NULL;
       return cmd_data;
   }
   if (*endptr != '\0') {
-      printf("Further characters after number: %s\n", endptr);
+      printf("Bad file descriptor\n");
       cmd_data.argv = NULL;
       return cmd_data;
   }
