@@ -7,23 +7,22 @@ all: simpsh
 SOURCES = main.c filedesc.c command.c util.c
 HEADERS = filedesc.h command.h util.h
 OBJECTS = $(subst .c,.o,$(SOURCES))
-TESTS = test.sh
 
 simpsh: $(OBJECTS)
 	$(CC) $(CFLAGS) $(OPTIMIZE) -o $@ $(OBJECTS)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(OPTIMIZE) -c $< -o $@
 
 
 main.c filedesc.c command.c: filedesc.h
 main.c command.c: command.h
 main.c command.c util.c: util.h
 
-check: test piazza
 
-test: clean
-	./test.sh
+TESTS = test.sh #piazza-tests.sh
+check: clean simpsh
+	for test in $(TESTS); do ./$$test; done
 
 
 DISTDIR = lab1-michaelli
@@ -36,6 +35,6 @@ $(DISTDIR): $(DIST_FILES)
 
 
 clean:
-	rm -rf *.o *.tmp $(DISTDIR) $(DISTDIR).tar.gz
+	rm -rf simpsh *.o *.tmp $(DISTDIR) $(DISTDIR).tar.gz
 
 .PHONY: all check dist clean
