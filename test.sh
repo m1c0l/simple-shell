@@ -45,18 +45,18 @@ test "$output" = "$(printf -- "--wronly $tmp\n--command 0 1 1 sort\n\
 should_succeed "verbose has the correct output"
 
 
-output=$(./simpsh --rdonly $tmp --wronly $tmp2 --command 0 -1 1 2>&1)
+output=$(./simpsh --rdonly $tmp --wronly $tmp2 --command 0 -1 1 cat 2>&1)
 should_fail "negative file descriptors should fail"
 [[ "$output" =~ "file descriptor" ]]
 should_succeed "negative file descriptors should report and error"
 
 
-output=$(./simpsh --rdonly $tmp --wronly $tmp2 --command 0 aa 1 2>&1)
+output=$(./simpsh --rdonly $tmp --wronly $tmp2 --command 0 aa 1 cat 2>&1)
 should_fail "nonnumber file descriptors should fail"
 [[ "$output" =~ "file descriptor" ]]
 should_succeed "nonnumber file descriptors should report and error"
 
-output=$(./simpsh --rdonly $tmp --wronly $tmp2 --command 0 1a 1 2>&1)
+output=$(./simpsh --rdonly $tmp --wronly $tmp2 --command 0 1a 1 cat 2>&1)
 should_fail "nonnumber file descriptors should fail"
 [[ "$output" =~ "file descriptor" ]]
 should_succeed "nonnumber file descriptors should report and error"
