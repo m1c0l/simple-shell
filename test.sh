@@ -35,10 +35,7 @@ function should_succeed() {
 
 tmp=$(mktemp)
 tmp2=$(mktemp)
-
-function delete_tmp() {
-  rm $tmp $tmp2
-}
+tmp3=$(mktemp)
 
 echo "some text" > $tmp
 output=$( ./simpsh --rdonly $tmp --verbose --wronly $tmp \
@@ -60,8 +57,22 @@ should_fail "nonnumber file descriptors should fail"
 should_succeed "nonnumber file descriptors should report and error"
 
 
+random="reiujfsdkf"
+output=$(./simpsh --rdonly $tmp --wronly $tmp2 --wronly $tmp3 \
+  --command 0 1 2 ls $tmp $random 2>&1)
+should_succeed "valid call should return 0"
+test "$(cat $tmp2)" = "$tmp"
+should_succeed "writes to stdout correctly"
+[[ "$(cat $tmp3)" =~ "No such file or directory" ]]
+should_succeed "writes to stderr correctly"
+test "$(cat $tmp3)" = "$tmp"
+should_fail "stderr should not be in stdout file"
+[[ "$(cat $tmp2)" =~ "No such file or directory" ]]
+should_fail "stdout should not be in stderr file"
 
-delete_tmp
+
+
+rm $tmp $tmp2 $tmp3
 
 if $all_passed; then
   echo "Success"

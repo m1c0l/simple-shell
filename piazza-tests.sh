@@ -36,9 +36,6 @@ function should_succeed() {
 tmp=$(mktemp)
 tmp2=$(mktemp)
 
-function delete_tmp() {
-  rm $tmp $tmp2
-}
 
 ./simpsh --rdonly cantpossiblyexist 2>&1 |
   grep "No such file or directory" > /dev/null
@@ -155,7 +152,7 @@ should_succeed "wronly should overwrite file"
 # TODO: test that verbose outputs each of the options in the right order
 # TODO: test with larger number file descriptors
 
-delete_tmp
+rm $tmp $tmp2
 
 if $all_passed; then
   echo "Success"
