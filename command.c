@@ -95,20 +95,25 @@ command_data parse_command(int argc, char **argv, int *opt) {
   long val;
   val = strtol(str, &endptr, 10);
   if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
-          || (errno != 0 && val == 0)) {
+          || (errno != 0 && val == 0)) { // out of range
       fprintf(stderr, "Bad file descriptor\n");
       cmd_data.argv = NULL;
       return cmd_data;
   }
-  if (endptr == str) {
+  if (endptr == str) { // no digits found
       fprintf(stderr, "Bad file descriptor\n");
       cmd_data.argv = NULL;
       return cmd_data;
   }
-  if (*endptr != '\0') {
-      printf("Bad file descriptor\n");
+  if (*endptr != '\0') { // letters found after #
+      fprintf(stderr, "Bad file descriptor\n");
       cmd_data.argv = NULL;
       return cmd_data;
+  }
+  if (val < 0) { // negative fd
+    fprintf(stderr, "Bad file descriptor\n");
+    cmd_data.argv = NULL;
+    return cmd_data;
   }
   cmd_data.in = val;
 
@@ -127,9 +132,14 @@ command_data parse_command(int argc, char **argv, int *opt) {
       return cmd_data;
   }
   if (*endptr != '\0') {
-      printf("Bad file descriptor\n");
+      fprintf(stderr, "Bad file descriptor\n");
       cmd_data.argv = NULL;
       return cmd_data;
+  }
+  if (val < 0) {
+    fprintf(stderr, "Bad file descriptor\n");
+    cmd_data.argv = NULL;
+    return cmd_data;
   }
   cmd_data.out = val;
 
@@ -148,9 +158,14 @@ command_data parse_command(int argc, char **argv, int *opt) {
       return cmd_data;
   }
   if (*endptr != '\0') {
-      printf("Bad file descriptor\n");
+      fprintf(stderr, "Bad file descriptor\n");
       cmd_data.argv = NULL;
       return cmd_data;
+  }
+  if (val < 0) {
+    fprintf(stderr, "Bad file descriptor\n");
+    cmd_data.argv = NULL;
+    return cmd_data;
   }
   cmd_data.err = val;
 
