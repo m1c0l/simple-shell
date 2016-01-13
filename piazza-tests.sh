@@ -5,15 +5,16 @@ if [ "$1" = "--debug" ]; then
   set -x
 fi
 
+all_passed=true
+
 function should_fail() {
   result=$?
 
   echo -n "==> $1 ($(caller))"
 
-  if [ $result -lt 1 ]; then
+  if [ $result -eq 0 ]; then
     echo "FAILURE"
-    delete_tmp
-    exit 1
+    all_passed=false
   else
     echo
   fi
@@ -24,10 +25,9 @@ function should_succeed() {
 
   echo -n "==> $1 ($(caller))"
 
-  if [ $result -gt 0 ]; then
+  if [ $result -ne 0 ]; then
     echo "FAILURE"
-    delete_tmp
-    exit 1
+    all_passed=false
   else
     echo
   fi
@@ -155,6 +155,12 @@ should_succeed "wronly should overwrite file"
 # TODO: test that verbose outputs each of the options in the right order
 # TODO: test with larger number file descriptors
 
-echo "Success"
-
 delete_tmp
+
+if $all_passed; then
+  echo "Success"
+  exit 0
+else
+  echo "Some tests failed"
+  exit 1
+fi
