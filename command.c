@@ -42,18 +42,13 @@ int command(int argc, char **argv, int *opt) {
 }
 
 int set_streams(int in, int out, int err) {
-  if (in > g_currFileDesc) {
-    fprintf(stderr, "Bad file descriptor: %d\n", in);
+  file infile = getFile(in),
+       outfile = getFile(out),
+       errfile = getFile(err);
+
+  /* if there was an error getting file info */
+  if (infile.fd == -1 || outfile.fd == -1 || errfile.fd == -1)
     return -1;
-  }
-  if (out > g_currFileDesc) {
-    fprintf(stderr, "Bad file descriptor: %d\n", out);
-    return -1;
-  }
-  if (err > g_currFileDesc) {
-    fprintf(stderr, "Bad file descriptor: %d\n", err);
-    return -1;
-  }
 
   stdcopy.in = dup(0);
   stdcopy.out = dup(1);
@@ -63,9 +58,9 @@ int set_streams(int in, int out, int err) {
     return -1;
   }
 
-  if ((dup2(g_fileDesc[in], 0) == -1) ||
-      (dup2(g_fileDesc[out], 1) == -1) ||
-      (dup2(g_fileDesc[err], 2) == -1)) {
+  if ((dup2(infile.fd, 0) == -1) ||
+      (dup2(outfile.fd, 1) == -1) ||
+      (dup2(errfile.fd, 2) == -1)) {
     /* use the copied stderr in case it was already replaced */
     fprintf(fdopen(stdcopy.err, "w"),
         "Error duplicating file descriptor: %s\n", strerror(errno));

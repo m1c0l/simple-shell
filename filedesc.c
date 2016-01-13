@@ -5,20 +5,20 @@
 #include <string.h>
 #include <errno.h>
 
-int *g_fileDesc;
-int g_currFileDesc = -1; // index of the highest file descriptor
-size_t g_fileDescSize = 64; // dynamic size of file descriptor array
+file *fileDesc;
+int currFileDesc = -1; // index of the highest file descriptor
+size_t fileDescSize = 64; // dynamic size of file descriptor array
 
 void initFileDesc() {
-  g_fileDesc = (int *)malloc(sizeof(int) * g_fileDescSize);
-  if (g_fileDesc == NULL) {
+  fileDesc = (file*)malloc(sizeof(file) * fileDescSize);
+  if (fileDesc == NULL) {
     fprintf(stderr, "Error allocating memory: %s\n", strerror(errno));
     exit(1);
   }
 }
 
 void endFileDesc() {
-  free(g_fileDesc);
+  free(fileDesc);
 }
 
 int openFile(char* filename, int oflag) {
@@ -28,18 +28,27 @@ int openFile(char* filename, int oflag) {
     return 1;
   }
 
-  if ((size_t)g_currFileDesc > g_fileDescSize) {
-    g_fileDescSize *= 2;
-    g_fileDesc = (int *)realloc(g_fileDesc, g_fileDescSize);
-    if (g_fileDesc == NULL) {
+  if ((size_t)currFileDesc > fileDescSize) {
+    fileDescSize *= 2;
+    fileDesc = (file*)realloc(fileDesc, sizeof(file) * fileDescSize);
+    if (fileDesc == NULL) {
       fprintf(stderr, "Error allocating memory: %s\n", strerror(errno));
       exit(1);
     }
   }
 
-  g_currFileDesc++;
-  g_fileDesc[g_currFileDesc] = fd;
+  currFileDesc++;
+  fileDesc[currFileDesc].fd = fd;
+  fileDesc[currFileDesc].oflag = oflag;
   
-  // printf("fd: %d\n", fd);
   return 0;
+}
+
+file getFile(int index) {
+  if (index > currFileDesc) {
+    fprintf(stderr, "Bad file descriptor: %d\n", index);
+    file bad = { .fd = -1, .oflag = 0 };
+    return bad;
+  }
+  return fileDesc[index];
 }

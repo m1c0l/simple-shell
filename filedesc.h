@@ -1,11 +1,14 @@
 #ifndef FILEDESC_H
 #define FILEDESC_H
 
+typedef struct {
+  int fd;
+  int oflag;
+} file;
+
 void initFileDesc();
 void endFileDesc();
 int openFile(char* filename, int oflag);
-
-extern int *g_fileDesc;
-extern int g_currFileDesc;
+file getFile(int index);
 
 #endif /* FILEDESC_H */
