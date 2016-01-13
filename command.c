@@ -23,6 +23,7 @@ int command(int argc, char **argv, int *opt) {
 
   if (set_streams(data.in, data.out, data.err) == -1) {
     reset_streams();
+    free(data.argv);
     return 1;
   }
 
@@ -31,10 +32,10 @@ int command(int argc, char **argv, int *opt) {
   if (ret)
     fprintf(stderr, "%s: %s\n", data.argv[0], strerror(errno));
 
+  free(data.argv); // malloc called in parse_command()
   if (reset_streams() == -1) {
     return 1;
   }
-  free(data.argv); // malloc called in parse_command()
   return ret;
 }
 
