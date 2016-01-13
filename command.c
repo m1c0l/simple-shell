@@ -5,6 +5,7 @@
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <limits.h>
 
 #include "command.h"
 #include "filedesc.h"
@@ -89,9 +90,69 @@ command_data parse_command(int argc, char **argv, int *opt) {
   }
 
   /* first 3 arguments are input, output, and error */
-  cmd_data.in = atoi(argv[opt_ind++]);
-  cmd_data.out = atoi(argv[opt_ind++]);
-  cmd_data.err = atoi(argv[opt_ind++]);
+  char *endptr;
+  char *str = argv[opt_ind++];
+  long val;
+  val = strtol(str, &endptr, 10);
+  if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
+          || (errno != 0 && val == 0)) {
+      perror("strtol");
+      cmd_data.argv = NULL;
+      return cmd_data;
+  }
+  if (endptr == str) {
+      fprintf(stderr, "No digits were found\n");
+      cmd_data.argv = NULL;
+      return cmd_data;
+  }
+  if (*endptr != '\0') {
+      printf("Further characters after number: %s\n", endptr);
+      cmd_data.argv = NULL;
+      return cmd_data;
+  }
+  cmd_data.in = val;
+
+
+  str = argv[opt_ind++];
+  val = strtol(str, &endptr, 10);
+  if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
+          || (errno != 0 && val == 0)) {
+      perror("strtol");
+      cmd_data.argv = NULL;
+      return cmd_data;
+  }
+  if (endptr == str) {
+      fprintf(stderr, "No digits were found\n");
+      cmd_data.argv = NULL;
+      return cmd_data;
+  }
+  if (*endptr != '\0') {
+      printf("Further characters after number: %s\n", endptr);
+      cmd_data.argv = NULL;
+      return cmd_data;
+  }
+  cmd_data.out = val;
+
+
+  str = argv[opt_ind++];
+  val = strtol(str, &endptr, 10);
+  if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
+          || (errno != 0 && val == 0)) {
+      perror("strtol");
+      cmd_data.argv = NULL;
+      return cmd_data;
+  }
+  if (endptr == str) {
+      fprintf(stderr, "No digits were found\n");
+      cmd_data.argv = NULL;
+      return cmd_data;
+  }
+  if (*endptr != '\0') {
+      printf("Further characters after number: %s\n", endptr);
+      cmd_data.argv = NULL;
+      return cmd_data;
+  }
+  cmd_data.err = val;
 
   /* size of command's argv */
   int argv_size = arg_count - 3;
