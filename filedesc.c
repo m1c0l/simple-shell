@@ -81,8 +81,7 @@ int getStream(int fd) {
     return stdcopy.in;
   if (fd == 1)
     return stdcopy.out;
-  else // fd == 2
-    return stdcopy.err;
+  return stdcopy.err; // fd == 2
 }
 
 FILE *getStderrFile() {
