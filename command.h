@@ -9,6 +9,9 @@ typedef struct {
 } command_data;
 
 /* Sets optind while consuming --command args */
-int command(int argc, char **argv, int *opt);
+command_data parse_command(int argc, char **argv, int *opt);
+
+/* Executes a command */
+int command(command_data data);
 
 #endif /* COMMAND_H */

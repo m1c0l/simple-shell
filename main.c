@@ -120,8 +120,8 @@ int main (int argc, char **argv) {
 
         case COMMAND:
           { 
-            int ret;
-            ret = command(argc, argv, &optind);
+            command_data cmd_data = parse_command(argc, argv, &optind);
+            int ret = command(cmd_data);
             if (ret > commandReturn) {
               commandReturn = ret;
             }

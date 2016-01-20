@@ -12,11 +12,9 @@
 #include "util.h"
 
 int execute_command(command_data cmd_data);
-command_data parse_command(int argc, char **argv, int *opt);
 int set_streams(int in, int out, int err);
 
-int command(int argc, char **argv, int *opt) {
-  command_data data = parse_command(argc, argv, opt);
+int command(command_data data) {
   /* error parsing command */
   if (data.argv == NULL)
     return 1;
