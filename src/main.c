@@ -30,6 +30,7 @@ enum Options {
   RSYNC,
   SYNC,
   TRUNC,
+  CLOSE,
   COMMAND,
   ABORT
 };
@@ -56,6 +57,7 @@ static struct option long_options[] =
   {"rdonly",  required_argument, 0, RDONLY},
   {"wronly",  required_argument, 0, WRONLY},
   {"rdwr",    required_argument, 0, RDWR},
+  {"close",   required_argument, 0, CLOSE},
   {"command", no_argument, 0, COMMAND},
   {0, 0, 0, 0}
 };
@@ -168,6 +170,10 @@ int main (int argc, char **argv) {
 
         case TRUNC:
           parseOflags(O_TRUNC);
+          break;
+
+        case CLOSE:
+          closeFile(optarg);
           break;
 
         case COMMAND:

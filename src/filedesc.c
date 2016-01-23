@@ -1,11 +1,13 @@
-#include "filedesc.h"
-#include "stream.h"
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
+
+#include "filedesc.h"
+#include "stream.h"
+#include "util.h"
 
 file *fileDesc;
 int currFileDesc = -1; // index of the highest file descriptor
@@ -47,10 +49,23 @@ int openFile(char* filename, int oflag) {
 }
 
 file getFile(int index) {
-  if (index > currFileDesc) {
+  if (index < 0 || index > currFileDesc || fileDesc[index].fd < 0) {
     fprintf(getStderrFile(), "Bad file descriptor: %d\n", index);
     file bad = { .fd = -1, .oflag = 0 };
     return bad;
   }
   return fileDesc[index];
+}
+
+int closeFile(char* fd_string) {
+  int fd = get_file_desc(fd_string);
+  int real_fd = getFile(fd).fd;
+  if (real_fd < 0) return -1; // invalid fd
+
+  close(real_fd);
+
+  /* mark this file descriptor as invalid */
+  fileDesc[fd].fd = -1;
+
+  return 0;
 }

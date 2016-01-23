@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -std=gnu99 -Wall -Wextra -Wno-unused-parameter
-OPTIMIZE = -g # -O2
+OPTIMIZE = -g# -O2
 
 all: simpsh
 
@@ -18,7 +18,6 @@ obj:
 obj/%.o: src/%.c
 	$(CC) $(CFLAGS) $(OPTIMIZE) -c $< -o $@
 
-#*.c: *.h
 main.c filedesc.c command.c stream.c: src/filedesc.h
 main.c command.c: src/command.h
 main.c command.c util.c: src/util.h
