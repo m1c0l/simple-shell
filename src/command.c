@@ -9,10 +9,10 @@
 
 #include "command.h"
 #include "filedesc.h"
+#include "stream.h"
 #include "util.h"
 
 int execute_command(command_data cmd_data);
-int set_streams(int in, int out, int err);
 
 int command(command_data data) {
   /* error parsing command */
@@ -37,38 +37,6 @@ int command(command_data data) {
   return ret;
 }
 
-int set_streams(int in, int out, int err) {
-  file infile = getFile(in),
-       outfile = getFile(out),
-       errfile = getFile(err);
-
-  /* if there was an error getting file info */
-  if (infile.fd == -1 || outfile.fd == -1 || errfile.fd == -1)
-    return -1;
-
-  /* Error if infile is write-only */
-  if (infile.oflag & O_WRONLY) {
-    fprintf(getStderrFile(),
-        "File not opened with read permissions: %d\n", in);
-    return -1;
-  }
-  /* Error if outfile or errfile doesn't have write permission */
-  if (!(outfile.oflag & (O_WRONLY|O_RDWR)) ||
-      !(errfile.oflag & (O_WRONLY|O_RDWR))) {
-    fprintf(getStderrFile(),
-        "File not opened with write permissions: %d\n", in);
-    return -1;
-  }
-
-  if ((dup2(infile.fd, 0) == -1) ||
-      (dup2(outfile.fd, 1) == -1) ||
-      (dup2(errfile.fd, 2) == -1)) {
-    fprintf(getStderrFile(),
-        "Error duplicating file descriptor: %s\n", strerror(errno));
-    return -1;
-  }
-  return 0;
-}
 
 long get_file_desc(char *str) {
   char *endptr;

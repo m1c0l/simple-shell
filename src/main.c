@@ -6,12 +6,14 @@
 
 #include "filedesc.h"
 #include "command.h"
+#include "stream.h"
 #include "util.h"
 
 
 
 int main (int argc, char **argv) {
   initFileDesc(); // allocate file descriptor array
+  initStream(); // create copies of standard streams
 
   /* Identifiers for the command line options
    * Starts from 1 because flag arguments use 0 */
@@ -148,6 +150,7 @@ int main (int argc, char **argv) {
     }
 
   endFileDesc(); // free file descriptor array
+  endStream(); // close standard stream copies
 
   return commandReturn;
 }
