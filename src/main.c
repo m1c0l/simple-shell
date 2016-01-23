@@ -32,7 +32,8 @@ enum Options {
   TRUNC,
   CLOSE,
   COMMAND,
-  ABORT
+  ABORT,
+  PAUSE
 };
 
 static int verbose_flag;
@@ -43,6 +44,7 @@ static struct option long_options[] =
 {
   {"verbose", no_argument,       0, VERBOSE},
   {"abort",   no_argument,       0, ABORT},
+  {"pause",   no_argument,      0,  PAUSE},
   {"append",   no_argument,       0, APPEND},
   {"cloexec",   no_argument,       0, CLOEXEC},
   {"creat",   no_argument,       0, CREAT},
@@ -192,6 +194,10 @@ int main (int argc, char **argv) {
             int *p = 0;
             *p = 0;
           }
+          break;
+
+        case PAUSE:
+          pause();
           break;
 
         case '?':
