@@ -63,18 +63,7 @@ static struct option long_options[] =
 int option_index = 0;
 
 // optind is global so we don't need it in the args here
-void parseOflags(int oflag, int argc, char **argv) {
-  if (optind < argc)
-  {
-    char *nextArg = argv[optind];
-    if (is_not_option(nextArg)) {
-      fprintf(stderr, "Extra argument for %s: %s\n", long_options[option_index].name, argv[optind]);
-      if (!commandReturn) {
-        commandReturn = 1;
-      }
-    }
-  }
-
+void parseOflags(int oflag) {
   // store the flag
   file_oflags |= oflag;
 
@@ -126,59 +115,59 @@ int main (int argc, char **argv) {
           break;
 
         case RDONLY:
-          parseOflags(O_RDONLY, argc, argv);
+          parseOflags(O_RDONLY);
           break;
 
         case WRONLY:
-          parseOflags(O_WRONLY, argc, argv);
+          parseOflags(O_WRONLY);
           break;
 
         case RDWR:
-          parseOflags(O_RDWR, argc, argv);
+          parseOflags(O_RDWR);
           break;
 
         case APPEND:
-          parseOflags(O_APPEND, argc, argv);
+          parseOflags(O_APPEND);
           break;
 
         case CLOEXEC:
-          parseOflags(O_CLOEXEC, argc, argv);
+          parseOflags(O_CLOEXEC);
           break;
 
         case CREAT:
-          parseOflags(O_CREAT, argc, argv);
+          parseOflags(O_CREAT);
           break;
 
         case DIRECTORY:
-          parseOflags(O_DIRECTORY, argc, argv);
+          parseOflags(O_DIRECTORY);
           break;
 
         case DSYNC:
-          parseOflags(O_DSYNC, argc, argv);
+          parseOflags(O_DSYNC);
           break;
 
         case EXCL:
-          parseOflags(O_EXCL, argc, argv);
+          parseOflags(O_EXCL);
           break;
 
         case NOFOLLOW:
-          parseOflags(O_NOFOLLOW, argc, argv);
+          parseOflags(O_NOFOLLOW);
           break;
 
         case NONBLOCK:
-          parseOflags(O_NONBLOCK, argc, argv);
+          parseOflags(O_NONBLOCK);
           break;
 
         case RSYNC:
-          parseOflags(O_RSYNC, argc, argv);
+          parseOflags(O_RSYNC);
           break;
 
         case SYNC:
-          parseOflags(O_SYNC, argc, argv);
+          parseOflags(O_SYNC);
           break;
 
         case TRUNC:
-          parseOflags(O_TRUNC, argc, argv);
+          parseOflags(O_TRUNC);
           break;
 
         case COMMAND:
@@ -207,6 +196,16 @@ int main (int argc, char **argv) {
           break;
         default:
           break;
+        }
+        if (optind < argc)
+        {
+          char *nextArg = argv[optind];
+          if (is_not_option(nextArg)) {
+            fprintf(stderr, "Extra argument for %s: %s\n", long_options[option_index].name, argv[optind]);
+            if (!commandReturn) {
+              commandReturn = 1;
+            }
+          }
         }
     }
 
