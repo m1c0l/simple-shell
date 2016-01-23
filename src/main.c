@@ -4,6 +4,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#define _GNU_SOURCE
+
 #include "filedesc.h"
 #include "command.h"
 #include "util.h"
@@ -21,6 +23,17 @@ int main (int argc, char **argv) {
     RDONLY,
     WRONLY,
     RDWR,
+    APPEND,
+    CLOEXEC,
+    CREAT,
+    DIRECTORY,
+    DSYNC,
+    EXCL,
+    NOFOLLOW,
+    NONBLOCK,
+    RSYNC,
+    SYNC,
+    TRUNC,
     COMMAND,
     ABORT
   };
@@ -31,6 +44,8 @@ int main (int argc, char **argv) {
   int commandReturn = 0;
 
   int c;
+
+  int file_oflags = 0;
 
   while (1)
     {
@@ -84,12 +99,14 @@ int main (int argc, char **argv) {
             }
           }
           {
-            int openStatus = openFile(optarg, O_RDONLY);
+            file_oflags |= O_RDONLY;
+            int openStatus = openFile(optarg, file_oflags);
             if (openStatus) {
               if (!commandReturn) {
                   commandReturn = 1;
                 }
             }
+            file_oflags = 0;
           }
           break; 
 
@@ -105,12 +122,14 @@ int main (int argc, char **argv) {
             }
           }
           {
-            int openStatus = openFile(optarg, O_WRONLY);
+            file_oflags |= O_WRONLY;
+            int openStatus = openFile(optarg, file_oflags);
             if (openStatus) {
               if (!commandReturn) {
                   commandReturn = 1;
                 }
             }
+            file_oflags = 0;
           }
           break;
 
