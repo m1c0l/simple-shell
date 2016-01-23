@@ -5,19 +5,23 @@ OPTIMIZE = -g # -O2
 all: simpsh
 
 SOURCES = main.c filedesc.c command.c util.c
-HEADERS = filedesc.h command.h util.h
-OBJECTS = $(subst .c,.o,$(SOURCES))
+_HEADERS = filedesc.h command.h util.h
+HEADERS = $(HEADERS:%=src/%)
+OBJECTS = $(SOURCES:%.c=obj/%.o)
 
-simpsh: $(OBJECTS)
+simpsh: obj $(OBJECTS)
 	$(CC) $(CFLAGS) $(OPTIMIZE) -o $@ $(OBJECTS)
 
-%.o: %.c
-	$(CC) $(CFLAGS) $(OPTIMIZE) -c $< -o $@
+obj:
+	mkdir -p $@
+
+obj/%.o: %.c
+	$(CC) $(CFLAGS) $(OPTIMIZE) -c src/$< -o $@
 
 
-main.c filedesc.c command.c: filedesc.h
-main.c command.c: command.h
-main.c command.c util.c: util.h
+main.c filedesc.c command.c: src/filedesc.h
+main.c command.c: src/command.h
+main.c command.c util.c: src/util.h
 
 
 TESTS = test.sh #piazza-tests.sh
@@ -28,7 +32,7 @@ check: clean simpsh
 
 
 DISTDIR = lab1-michaelli
-DIST_FILES = Makefile README $(SOURCES) $(HEADERS) $(TESTS)
+DIST_FILES = Makefile README src/ $(TESTS)
 
 dist: $(DISTDIR)
 
@@ -37,6 +41,6 @@ $(DISTDIR): $(DIST_FILES)
 
 
 clean:
-	rm -rf simpsh *.o *.tmp $(DISTDIR) $(DISTDIR).tar.gz
+	rm -rf simpsh obj/ *.o *.tmp $(DISTDIR) $(DISTDIR).tar.gz
 
 .PHONY: all check dist clean test
