@@ -24,7 +24,7 @@ void endFileDesc(void) {
 }
 
 int openFile(char* filename, int oflag) {
-  int fd = open(filename, oflag);
+  int fd = open(filename, oflag, 0644);
   if (fd == -1) {
     fprintf(stderr, "Error opening %s: %s\n", filename, strerror(errno));
     return 1;
