@@ -50,10 +50,11 @@ function check_valgrind() {
 tmp=$(mktemp)
 tmp2=$(mktemp)
 tmp3=$(mktemp)
+text="some text"
 
 
-
-echo "some text" > $tmp
+# --verbose
+echo $text > $tmp
 output=$( ./simpsh --rdonly $tmp --verbose --wronly $tmp \
   --command 0 1 1 sort --wronly $tmp )
 test "$output" = "$(printf -- "--wronly $tmp\n--command 0 1 1 sort\n\
@@ -61,11 +62,11 @@ test "$output" = "$(printf -- "--wronly $tmp\n--command 0 1 1 sort\n\
 should_succeed "verbose has the correct output"
 
 
+# --command: invalid file descriptors
 output=$(./simpsh --rdonly $tmp --wronly $tmp2 --command 0 -1 1 cat 2>&1)
 should_fail "negative file descriptors should fail"
 [[ "$output" =~ "file descriptor" ]]
 should_succeed "negative file descriptors should report and error"
-
 
 output=$(./simpsh --rdonly $tmp --wronly $tmp2 --command 0 aa 1 cat 2>&1)
 should_fail "nonnumber file descriptors should fail"
@@ -77,6 +78,7 @@ should_fail "nonnumber file descriptors should fail"
 [[ "$output" =~ "file descriptor" ]]
 should_succeed "nonnumber file descriptors should report and error"
 
+# proper redirection
 random="reiujfsdkf"
 output=$(./simpsh --rdonly $tmp --wronly $tmp2 --wronly $tmp3 \
   --command 0 1 2 ls $tmp $random 2>&1)
@@ -91,6 +93,7 @@ should_fail "stderr should not be in stdout file"
 should_fail "stdout should not be in stderr file"
 
 
+# valgrind
 check_valgrind "./simpsh --rdonly $tmp --wronly $tmp2 --wronly $tmp3 --verbose \
   --command 0 1 2 cat --rdonly in --command 0 1 2 ls -l --wronly out"
 should_succeed "Valgrind reports no memory leaks"
@@ -109,6 +112,50 @@ should_succeed "No memory leaks when not enough --command args"
 check_valgrind "./simpsh --rdonly $tmp --wronly $tmp2 $tmp3"
 should_succeed "No memory leaks when too many arguments to --wronly"
 
+
+# --rdwr
+output=$(./simpsh --rdwr $tmp --command 0 0 0 cat 2>&1)
+should_succeed "Can read and write files opened with --rdwr"
+
+echo $text > $tmp
+output=$(./simpsh --rdwr $tmp --trunc --wronly $tmp2 --command 0 1 1 cat)
+should_succeed "Can read from read-write file"
+test "$(cat $tmp2)" = "$(cat $tmp)"
+should_succeed "Can read from read-write file"
+
+echo $text > $tmp
+output=$(./simpsh --rdonly $tmp --trunc --rdwr $tmp2 --command 0 1 1 cat)
+should_succeed "Can write to read-write file"
+test "$(cat $tmp2)" = "$(cat $tmp)"
+should_succeed "Can write to read-write file"
+
+
+# --trunc
+echo $text > $tmp
+output=$(./simpsh --trunc --rdonly $tmp)
+should_succeed "Can open a file with --trunc --rdonly"
+test "$(cat $tmp)" = ""
+should_succeed "Opening a file with --trunc truncates it"
+
+echo $text > $tmp
+output=$(./simpsh --trunc --wronly $tmp)
+should_succeed "Can open a file with --trunc --wronly"
+test "$(cat $tmp)" = ""
+should_succeed "Opening a file with --trunc truncates it"
+
+
+# --creat
+rm $tmp
+output=$(./simpsh --rdonly $tmp 2>&1)
+should_fail "Cannot open a nonexistant file with --rdonly"
+[[ "$output" =~ "No such file or directory" ]]
+should_succeed "Cannot open a nonexistant file with --rdonly"
+output=$(./simpsh --creat --rdonly $tmp 2>&1)
+should_succeed "Can open a nonexistant file with --creat --rdonly"
+[[ "$output" =~ "No such file or directory" ]]
+should_fail "Can open a nonexistant file with --creat --rdonly"
+test -e $tmp
+should_succeed "File exists after opening with --creat"
 
 
 rm $tmp $tmp2 $tmp3
