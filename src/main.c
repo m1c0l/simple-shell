@@ -11,59 +11,95 @@
 #include "stream.h"
 #include "util.h"
 
+/* Identifiers for the command line options
+ * Starts from 1 because flag arguments use 0 */
+
+enum Options {
+  VERBOSE = 1,
+  RDONLY,
+  WRONLY,
+  RDWR,
+  APPEND,
+  CLOEXEC,
+  CREAT,
+  DIRECTORY,
+  DSYNC,
+  EXCL,
+  NOFOLLOW,
+  NONBLOCK,
+  RSYNC,
+  SYNC,
+  TRUNC,
+  COMMAND,
+  ABORT
+};
+
+static int verbose_flag;
+int commandReturn = 0;
+int file_oflags = 0;
+
+static struct option long_options[] =
+{
+  {"verbose", no_argument,       0, VERBOSE},
+  {"abort",   no_argument,       0, ABORT},
+  {"append",   no_argument,       0, APPEND},
+  {"cloexec",   no_argument,       0, CLOEXEC},
+  {"creat",   no_argument,       0, CREAT},
+  {"directory",   no_argument,       0, DIRECTORY},
+  {"dsync",   no_argument,       0, DSYNC},
+  {"excl",   no_argument,       0, EXCL},
+  {"nofollow",   no_argument,       0, NOFOLLOW},
+  {"nonblock",   no_argument,       0, NONBLOCK},
+  {"rsync",   no_argument,       0, RSYNC},
+  {"sync",   no_argument,       0, SYNC},
+  {"trunc",   no_argument,       0, TRUNC},
+  {"rdonly",  required_argument, 0, RDONLY},
+  {"wronly",  required_argument, 0, WRONLY},
+  {"rdwr",    required_argument, 0, RDWR},
+  {"command", no_argument, 0, COMMAND},
+  {0, 0, 0, 0}
+};
+/* getopt_long stores the option index here. */
+int option_index = 0;
+
+// optind is global so we don't need it in the args here
+void parseOflags(int oflag, int argc, char **argv) {
+  if (optind < argc)
+  {
+    char *nextArg = argv[optind];
+    if (is_not_option(nextArg)) {
+      fprintf(stderr, "Extra argument for %s: %s\n", long_options[option_index].name, argv[optind]);
+      if (!commandReturn) {
+        commandReturn = 1;
+      }
+    }
+  }
+
+  // store the flag
+  file_oflags |= oflag;
+
+  if (oflag == O_RDONLY || oflag == O_WRONLY || oflag == O_RDWR) {
+    // open the file
+    int openStatus = openFile(optarg, file_oflags);
+    if (openStatus) {
+      if (!commandReturn) {
+          commandReturn = 1;
+        }
+    }
+    // reset the oflags
+    file_oflags = 0;
+  }
+}
 
 
 int main (int argc, char **argv) {
   initFileDesc(); // allocate file descriptor array
   initStream(); // create copies of standard streams
 
-  /* Identifiers for the command line options
-   * Starts from 1 because flag arguments use 0 */
-
-  enum Options {
-    VERBOSE = 1,
-    RDONLY,
-    WRONLY,
-    RDWR,
-    APPEND,
-    CLOEXEC,
-    CREAT,
-    DIRECTORY,
-    DSYNC,
-    EXCL,
-    NOFOLLOW,
-    NONBLOCK,
-    RSYNC,
-    SYNC,
-    TRUNC,
-    COMMAND,
-    ABORT
-  };
-
-
-  static int verbose_flag;
-
-  int commandReturn = 0;
-
   int c;
-
-  int file_oflags = 0;
 
   while (1)
     {
-      static struct option long_options[] =
-        {
-          {"verbose", no_argument,       0, VERBOSE},
-          {"abort",   no_argument,       0, ABORT},
-          {"rdonly",  required_argument, 0, RDONLY},
-          {"wronly",  required_argument, 0, WRONLY},
-          {"rdwr",    required_argument, 0, RDWR},
-          {"command", no_argument, 0, COMMAND},
-          {0, 0, 0, 0}
-        };
-      /* getopt_long stores the option index here. */
-      int option_index = 0;
-
       c = getopt_long(argc, argv, "",
                        long_options, &option_index);
       
@@ -90,53 +126,59 @@ int main (int argc, char **argv) {
           break;
 
         case RDONLY:
-          if (optind < argc)
-          {
-            char *nextArg = argv[optind];
-            if (is_not_option(nextArg)) {
-              fprintf(stderr, "Extra argument for %s: %s\n", long_options[option_index].name, argv[optind]);
-              if (!commandReturn) {
-                commandReturn = 1;
-              }
-            }
-          }
-          {
-            file_oflags |= O_RDONLY;
-            int openStatus = openFile(optarg, file_oflags);
-            if (openStatus) {
-              if (!commandReturn) {
-                  commandReturn = 1;
-                }
-            }
-            file_oflags = 0;
-          }
-          break; 
+          parseOflags(O_RDONLY, argc, argv);
+          break;
 
         case WRONLY:
-          if (optind < argc)
-          {
-            char *nextArg = argv[optind];
-            if (is_not_option(nextArg)) {
-              fprintf(stderr, "Extra argument for %s: %s\n", long_options[option_index].name, argv[optind]);
-              if (!commandReturn) {
-                commandReturn = 1;
-              }
-            }
-          }
-          {
-            file_oflags |= O_WRONLY;
-            int openStatus = openFile(optarg, file_oflags);
-            if (openStatus) {
-              if (!commandReturn) {
-                  commandReturn = 1;
-                }
-            }
-            file_oflags = 0;
-          }
+          parseOflags(O_WRONLY, argc, argv);
           break;
 
         case RDWR:
-          
+          parseOflags(O_RDWR, argc, argv);
+          break;
+
+        case APPEND:
+          parseOflags(O_APPEND, argc, argv);
+          break;
+
+        case CLOEXEC:
+          parseOflags(O_CLOEXEC, argc, argv);
+          break;
+
+        case CREAT:
+          parseOflags(O_CREAT, argc, argv);
+          break;
+
+        case DIRECTORY:
+          parseOflags(O_DIRECTORY, argc, argv);
+          break;
+
+        case DSYNC:
+          parseOflags(O_DSYNC, argc, argv);
+          break;
+
+        case EXCL:
+          parseOflags(O_EXCL, argc, argv);
+          break;
+
+        case NOFOLLOW:
+          parseOflags(O_NOFOLLOW, argc, argv);
+          break;
+
+        case NONBLOCK:
+          parseOflags(O_NONBLOCK, argc, argv);
+          break;
+
+        case RSYNC:
+          parseOflags(O_RSYNC, argc, argv);
+          break;
+
+        case SYNC:
+          parseOflags(O_SYNC, argc, argv);
+          break;
+
+        case TRUNC:
+          parseOflags(O_TRUNC, argc, argv);
           break;
 
         case COMMAND:
