@@ -5,7 +5,6 @@
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <limits.h>
 
 #include "command.h"
 #include "filedesc.h"
@@ -35,32 +34,6 @@ int command(command_data data) {
     return 1;
   }
   return ret;
-}
-
-
-long get_file_desc(char *str) {
-  char *endptr;
-  long val;
-  val = strtol(str, &endptr, 10);
-  if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
-          || (errno != 0 && val == 0)) { // out of range
-      fprintf(stderr, "Bad file descriptor %s\n", str);
-      perror("strtol");
-      return -1;
-  }
-  if (endptr == str) { // no digits found
-      fprintf(stderr, "Bad file descriptor: no digits found in %s\n", str);
-      return -1;
-  }
-  if (*endptr != '\0') { // letters found after #
-      fprintf(stderr, "Bad file descriptor: letters found in %s\n", str);
-      return -1;
-  }
-  if (val < 0) { // negative fd
-    fprintf(stderr, "Bad file descriptor: negative # in %s\n", str);
-    return -1;
-  }
-  return val;
 }
 
 command_data parse_command(int argc, char **argv, int *opt) {
