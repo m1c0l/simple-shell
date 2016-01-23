@@ -32,6 +32,7 @@ enum Options {
   TRUNC,
   CLOSE,
   COMMAND,
+  WAIT,
   ABORT,
   PAUSE
 };
@@ -61,10 +62,14 @@ static struct option long_options[] =
   {"rdwr",    required_argument, 0, RDWR},
   {"close",   required_argument, 0, CLOSE},
   {"command", no_argument, 0, COMMAND},
+  {"wait", no_argument, 0, WAIT},
   {0, 0, 0, 0}
 };
 /* getopt_long stores the option index here. */
 int option_index = 0;
+
+// redeclare this so this file will recognize it
+int wait_flag;
 
 // optind is global so we don't need it in the args here
 void parseOflags(int oflag) {
@@ -90,6 +95,14 @@ int main (int argc, char **argv) {
   initStream(); // create copies of standard streams
 
   int c;
+
+  // loop through argv to see if --wait is present
+  wait_flag = 0;
+  for (int i = 1; i < argc; i++) {
+    if (strcmp(argv[i], "--wait") == 0) {
+      wait_flag = 1;
+    }
+  }
 
   while (1)
     {
@@ -198,6 +211,10 @@ int main (int argc, char **argv) {
 
         case PAUSE:
           pause();
+          break;
+
+        case WAIT:
+          // don't do anything here, deal with --wait in other places
           break;
 
         case '?':

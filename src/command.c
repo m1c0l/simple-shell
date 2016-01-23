@@ -11,6 +11,9 @@
 #include "stream.h"
 #include "util.h"
 
+// redeclare so this file recognizes
+// int wait_flag;
+
 int execute_command(command_data cmd_data);
 
 int command(command_data data) {
@@ -47,6 +50,7 @@ command_data parse_command(int argc, char **argv, int *opt) {
   /* struct to store data */
   command_data cmd_data;
 
+  // cmd_data.argc = arg_count - 3;
   /* Need at least 4 arguments */
   if (arg_count < 4) {
     fprintf(stderr, "Not enough arguments for --command\n");
@@ -100,7 +104,7 @@ command_data parse_command(int argc, char **argv, int *opt) {
 
 int execute_command(command_data cmd_data) {
   int pid;
-  //int status;
+  int status;
   pid = fork();
   if (pid == -1) {
     fprintf(stderr, "Error forking child: %s\n", strerror(errno));
@@ -114,14 +118,22 @@ int execute_command(command_data cmd_data) {
     return 1;
   }
   else {
-    // Code for --wait; don't need for part 1a
-    /*
-    if (waitpid(pid, &status, 0) == -1) {
-      fprintf(stderr, "Error waiting for child: %s\n", strerror(errno));
-      return 1;
-    }
-    return WEXITSTATUS(status);
-    */
+    // Code for --wait
+    if (wait_flag) {  
+      if (waitpid(pid, &status, 0) == -1) {
+        fprintf(stderr, "Error waiting for child: %s\n", strerror(errno));
+        return 1;
+      }
+      int exitStatus = WEXITSTATUS(status);
+      // TODO: maybe change from stdout to a stdout copy
+      fprintf(stdout ,"%d", exitStatus);
+      for (int i = 0; cmd_data.argv[i] != NULL; i++) {
+        fprintf(stdout, " %s", cmd_data.argv[i]);
+      }
+      fprintf(stdout, "\n");
+      return exitStatus;
+    }  
+
     return 0;
   }
 }
