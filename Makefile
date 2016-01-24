@@ -4,19 +4,19 @@ OPTIMIZE = -g# -O2
 
 all: simpsh
 
-_SOURCES = main.c filedesc.c command.c util.c stream.c
-_HEADERS = filedesc.h command.h stream.h util.h
-SOURCES = $(_SOURCES:%=src/%)
-HEADERS = $(_HEADERS:%=src/%)
-OBJECTS = $(_SOURCES:%.c=obj/%.o)
+SRC_DIR = src
+OBJ_DIR = obj
+SOURCES = $(wildcard $(SRC_DIR)/*.c)
+HEADERS = $(wildcard $(SRC_DIR)/*.h)
+OBJECTS = $(SOURCES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
-simpsh: obj $(OBJECTS)
+simpsh: $(OBJ_DIR) $(OBJECTS)
 	$(CC) $(CFLAGS) $(OPTIMIZE) -o $@ $(OBJECTS)
 
-obj:
+$(OBJ_DIR):
 	mkdir -p $@
 
-obj/%.o: src/%.c $(HEADERS)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS)
 	$(CC) $(CFLAGS) $(OPTIMIZE) -c $< -o $@
 
 
@@ -28,7 +28,7 @@ check: clean simpsh
 
 
 DISTDIR = lab1-michaelli
-DIST_FILES = Makefile README src/ $(TESTS)
+DIST_FILES = Makefile README $(SRC_DIR) $(TESTS)
 
 dist: $(DISTDIR)
 
