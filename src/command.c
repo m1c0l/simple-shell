@@ -117,13 +117,42 @@ int execute_command(command_data cmd_data) {
     return 1;
   }
 
+  file inFile = getFile(cmd_data.in), outFile = getFile(cmd_data.out), errFile = getFile(cmd_data.err);
   if (pid == 0) {
+    // if input is the read/input end of a pipe, fd[0]
+    if (inFile.isPipeEnd) {
+      // close the write/output end of the pipe, fd[1] which is the next file in the array
+      close(getFile(cmd_data.in + 1).fd);
+      printf("Child has input end, closing fd %d\n", cmd_data.in + 1);
+    }
+    // if output is the write/output end of a pipe, fd[1]
+    else if (outFile.isPipeEnd) {
+      // close the read/input end of the pipe, fd[0] which is the previous file in the array
+      close(getFile(cmd_data.out - 1).fd);
+      printf("Child has output end, closing fd %d\n", cmd_data.in - 1);
+    }
+
     execvp(cmd_data.argv[0], cmd_data.argv);
     /* if the child process reaches here, there was an error */
     fprintf(stderr, "Error executing: %s\n", strerror(errno));
     return 1;
   }
   else {
+    // if input is the read/input end of a pipe, fd[0]
+    if (inFile.isPipeEnd) {
+      close(inFile.fd);
+      // close the write/output end of the pipe, fd[1] which is the next file in the array
+      close(getFile(cmd_data.in + 1).fd);
+      printf("Parent saw input end, closing %d and %d\n", cmd_data.in, cmd_data.in + 1);
+    }
+    // if output is the write/output end of a pipe, fd[1]
+    else if (outFile.isPipeEnd) {
+      close(outFile.fd);
+      // close the read/input end of the pipe, fd[0] which is the previous file in the array
+      close(getFile(cmd_data.out - 1).fd);
+      printf("Parent saw output end, closing %d and %d\n", cmd_data.out, cmd_data.out - 1);
+    }
+
     /* store child process info */
     if ((size_t)wait_data_index >= wait_data_size) {
       wait_data_size *= 2;

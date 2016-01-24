@@ -72,7 +72,7 @@ int set_streams(int in, int out, int err) {
       (dup2(outfile.fd, 1) == -1) ||
       (dup2(errfile.fd, 2) == -1)) {
     fprintf(getStderrFile(),
-        "Error duplicating file descriptor: %s\n", strerror(errno));
+        "Error duplicating file descriptor: %s %d %d %d\n", strerror(errno), infile.fd, outfile.fd, errfile.fd);
     return -1;
   }
   return 0;
