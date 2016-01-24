@@ -15,7 +15,7 @@ function should_fail() {
   if [ $result -eq 0 ]; then
     echo "FAILURE"
     all_passed=false
-    return 1
+    exit 1
   else
     echo
     return 0
@@ -30,7 +30,7 @@ function should_succeed() {
   if [ $result -ne 0 ]; then
     echo "FAILURE"
     all_passed=false
-    return 1
+    exit 1
   else
     echo
     return 0
