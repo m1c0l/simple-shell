@@ -32,6 +32,9 @@ int getSignalNumber(char *str) {
 
 int ignoreSignal(char* optarg) {
 	int N = getSignalNumber(optarg);
+	if (N == -1) {
+		return 1;
+	}
 	if (signal(N, SIG_IGN) == SIG_ERR) {
 		fprintf(stderr, "Signal: %s\n", strerror(errno));
 		return 1;
@@ -41,8 +44,32 @@ int ignoreSignal(char* optarg) {
 
 int useDefaultSignal(char* optarg) {
 	int N = getSignalNumber(optarg);
+	if (N == -1) {
+		return 1;
+	}
 	if (signal(N, SIG_DFL) == SIG_ERR) {
 		fprintf(stderr, "Signal: %s\n", strerror(errno));
+		return 1;
+	}
+	return 0;
+}
+
+void signalHandlerInit(void) {
+	gSigAction.sa_handler = signalHandler;
+}
+
+void signalHandler(int signalNumber) {
+	fprintf(stderr, "%d caught\n", signalNumber);
+	exit(signalNumber);
+}
+
+int catchSignal(char* optarg) {
+	int signalNumber = getSignalNumber(optarg);
+	if (signalNumber == -1) {
+		return 1;
+	}
+	if (sigaction(signalNumber, &gSigAction, NULL) == -1) {
+		fprintf(stderr, "Handler for signal number %d failed to set up\n", signalNumber);
 		return 1;
 	}
 	return 0;

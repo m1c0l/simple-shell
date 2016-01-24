@@ -101,6 +101,8 @@ int main (int argc, char **argv) {
   initFileDesc(); // allocate file descriptor array
   initStream(); // create copies of standard streams
 
+  signalHandlerInit(); // initialize the sigaction object
+
   int c;
 
   // loop through argv to see if --wait is present
@@ -229,7 +231,12 @@ int main (int argc, char **argv) {
           break;
 
         case CATCH:
-
+          {
+            int catchStatus = catchSignal(optarg);
+            if (catchStatus && !commandReturn) {
+              commandReturn = 1;
+            }
+          }
           break;
 
         case IGNORE:
