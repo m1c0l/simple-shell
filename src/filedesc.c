@@ -42,8 +42,21 @@ int openFile(char* filename, int oflag) {
   }
 
   currFileDesc++;
-  fileDesc[currFileDesc].fd = fd;
-  fileDesc[currFileDesc].oflag = oflag;
+  // Store file info
+  file* curr = &fileDesc[currFileDesc];
+  curr->fd = fd;
+  if (oflag & O_WRONLY) {
+    curr->readable = 0;
+    curr->writable = 1;
+  }
+  else if (oflag & O_RDWR) {
+    curr->readable = 1;
+    curr->writable = 1;
+  }
+  else {
+    curr->readable = 1;
+    curr->writable = 0;
+  }
   
   return 0;
 }
@@ -51,7 +64,7 @@ int openFile(char* filename, int oflag) {
 file getFile(int index) {
   if (index < 0 || index > currFileDesc || fileDesc[index].fd < 0) {
     fprintf(getStderrFile(), "Bad file descriptor: %d\n", index);
-    file bad = { .fd = -1, .oflag = 0 };
+    file bad = { .fd = -1 };
     return bad;
   }
   return fileDesc[index];

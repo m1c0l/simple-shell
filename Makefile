@@ -21,7 +21,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS)
 
 
 TESTS = test.sh piazza-tests.sh
-check: clean simpsh
+check: simpsh
 	for test in $(TESTS); do \
 		./$$test || exit; \
 	done
