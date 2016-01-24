@@ -15,7 +15,12 @@ command_data parse_command(int argc, char **argv, int *opt);
 /* Executes a command */
 int command(command_data data);
 
-// whether --wait was entered or not
-extern int wait_flag;
+/* Wait for all child processes to finish */
+int wait_all(void);
+
+/* Allocate storage for argv array */
+void initCommand(void);
+/* Free storage, and wait for child process if wait_flag is set */
+int endCommand(int wait_flag);
 
 #endif /* COMMAND_H */

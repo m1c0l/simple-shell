@@ -41,7 +41,6 @@ enum Options {
   PAUSE
 };
 
-static int verbose_flag;
 int commandReturn = 0;
 int file_oflags = 0;
 
@@ -75,9 +74,6 @@ static struct option long_options[] =
 /* getopt_long stores the option index here. */
 int option_index = 0;
 
-// redeclare this so this file will recognize it
-int wait_flag;
-
 // optind is global so we don't need it in the args here
 void parseOflags(int oflag) {
   // store the flag
@@ -100,19 +96,14 @@ void parseOflags(int oflag) {
 int main (int argc, char **argv) {
   initFileDesc(); // allocate file descriptor array
   initStream(); // create copies of standard streams
-
+  initCommand(); // allocate argv[] array
   signalHandlerInit(); // initialize the sigaction object
 
+  /* Flags */
+  int verbose_flag = 0;
+  int wait_flag = 0;
+
   int c;
-
-  // loop through argv to see if --wait is present
-  wait_flag = 0;
-  for (int i = 1; i < argc; i++) {
-    if (strcmp(argv[i], "--wait") == 0) {
-      wait_flag = 1;
-    }
-  }
-
   while (1)
     {
       c = getopt_long(argc, argv, "",
@@ -124,7 +115,7 @@ int main (int argc, char **argv) {
 
       if (verbose_flag) {
         printf("--%s", long_options[option_index].name);
-        if (optarg != NULL) {
+        if (optarg) {
           printf(" %s", optarg);
         }
         for (int i = optind; i < argc && is_not_option(argv[i]); i++) {
@@ -227,7 +218,7 @@ int main (int argc, char **argv) {
           break;
 
         case WAIT:
-          // don't do anything here, deal with --wait in other places
+          wait_flag = 1;
           break;
 
         case CATCH:
@@ -281,6 +272,7 @@ int main (int argc, char **argv) {
 
   endFileDesc(); // free file descriptor array
   endStream(); // close standard stream copies
+  endCommand(wait_flag); // wait for child processes if wait_flag
 
   return commandReturn;
 }

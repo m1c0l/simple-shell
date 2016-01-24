@@ -132,7 +132,7 @@ echo foo > $tmp
 echo bar > $tmp2
 
 # cat of $tmp should end up in the $tmp2
-./simpsh --rdonly $tmp --wronly $tmp2 \
+./simpsh --rdonly $tmp --trunc --wronly $tmp2 \
   --command 0 1 1 cat
 cat $tmp2 | grep foo > /dev/null && wc -l $tmp2 | grep 1 > /dev/null
 should_succeed "wronly should overwrite file"
