@@ -270,7 +270,8 @@ int main (int argc, char **argv) {
         {
           char *nextArg = argv[optind];
           if (is_not_option(nextArg)) {
-            fprintf(stderr, "Extra argument for %s: %s\n", long_options[option_index].name, argv[optind]);
+            fprintf(stderr, "Extra argument for %s: %s\n",
+                long_options[option_index].name, argv[optind]);
             if (!commandReturn) {
               commandReturn = 1;
             }

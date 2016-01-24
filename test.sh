@@ -15,7 +15,7 @@ function should_fail() {
   if [ $result -eq 0 ]; then
     echo "FAILURE"
     all_passed=false
-    return 1
+    exit 1
   else
     echo
     return 0
@@ -30,7 +30,7 @@ function should_succeed() {
   if [ $result -ne 0 ]; then
     echo "FAILURE"
     all_passed=false
-    return 1
+    exit 1
   else
     echo
     return 0
@@ -79,10 +79,9 @@ should_fail "nonnumber file descriptors should fail"
 should_succeed "nonnumber file descriptors should report and error"
 
 # proper redirection
-random="reiujfsdkf"
+random=$RANDOM
 output=$(./simpsh --rdonly $tmp --wronly $tmp2 --wronly $tmp3 \
   --command 0 1 2 ls $tmp $random 2>&1)
-should_succeed "valid call should return 0"
 test "$(cat $tmp2)" = "$tmp"
 should_succeed "writes to stdout correctly"
 [[ "$(cat $tmp3)" =~ "No such file or directory" ]]

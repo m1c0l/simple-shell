@@ -55,15 +55,14 @@ int set_streams(int in, int out, int err) {
   if (infile.fd == -1 || outfile.fd == -1 || errfile.fd == -1)
     return -1;
 
-  /* Error if infile is write-only */
-  if (infile.oflag & O_WRONLY) {
+  /* Error if infile doesn't have read permission */
+  if (!infile.readable) {
     fprintf(getStderrFile(),
         "File not opened with read permissions: %d\n", in);
     return -1;
   }
   /* Error if outfile or errfile doesn't have write permission */
-  if (!(outfile.oflag & (O_WRONLY|O_RDWR)) ||
-      !(errfile.oflag & (O_WRONLY|O_RDWR))) {
+  if (!(outfile.writable || errfile.writable)) {
     fprintf(getStderrFile(),
         "File not opened with write permissions: %d\n", in);
     return -1;

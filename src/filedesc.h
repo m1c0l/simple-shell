@@ -3,7 +3,8 @@
 
 typedef struct {
   int fd;
-  int oflag;
+  int readable;
+  int writable;
 } file;
 
 void initFileDesc(void);
