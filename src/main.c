@@ -9,6 +9,7 @@
 #include "filedesc.h"
 #include "command.h"
 #include "stream.h"
+#include "signal_handler.h"
 #include "util.h"
 
 /* Identifiers for the command line options
@@ -34,6 +35,9 @@ enum Options {
   COMMAND,
   WAIT,
   ABORT,
+  CATCH,
+  IGNORE,
+  DEFAULT,
   PAUSE
 };
 
@@ -63,6 +67,9 @@ static struct option long_options[] =
   {"close",   required_argument, 0, CLOSE},
   {"command", no_argument, 0, COMMAND},
   {"wait", no_argument, 0, WAIT},
+  {"catch", required_argument, 0, CATCH},
+  {"ignore", required_argument, 0, IGNORE},
+  {"default", required_argument, 0, DEFAULT},
   {0, 0, 0, 0}
 };
 /* getopt_long stores the option index here. */
@@ -204,8 +211,12 @@ int main (int argc, char **argv) {
         case ABORT:
           {
             // intentionally cause segfault
-            int *p = 0;
-            *p = 0;
+            // int *p = 0;
+            // *p = 0;
+            int abortStatus = raiseAbortSignal();
+            if (abortStatus && !commandReturn) {
+              commandReturn = 1;
+            }
           }
           break;
 
@@ -215,6 +226,28 @@ int main (int argc, char **argv) {
 
         case WAIT:
           // don't do anything here, deal with --wait in other places
+          break;
+
+        case CATCH:
+
+          break;
+
+        case IGNORE:
+          {
+            int ignoreStatus = ignoreSignal(optarg);
+            if (ignoreStatus && !commandReturn) {
+              commandReturn = 1;
+            }
+          }
+          break;
+
+        case DEFAULT:
+          {
+            int defaultStatus = useDefaultSignal(optarg);
+            if (defaultStatus && !commandReturn) {
+              commandReturn = 1;
+            }
+          }
           break;
 
         case '?':
