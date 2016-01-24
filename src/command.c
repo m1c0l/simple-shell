@@ -164,6 +164,7 @@ int endCommand(int wait_flag) {
 
   pid_t pid;
   int status;
+  int max_status;
 
   while ((pid = waitpid(-1, &status, 0))) {
     if (errno == ECHILD) // all children reaped
@@ -175,6 +176,8 @@ int endCommand(int wait_flag) {
     }
 
     int exit_status = WEXITSTATUS(status);
+    if (exit_status > max_status)
+      max_status = exit_status;
 
     /* find the wait_data with the current pid */
     int index;
@@ -197,5 +200,5 @@ int endCommand(int wait_flag) {
 
   free_wait_data();
 
-  return 0; //exitStatus;
+  return max_status;
 }

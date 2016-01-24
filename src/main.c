@@ -83,9 +83,7 @@ void parseOflags(int oflag) {
     // open the file
     int openStatus = openFile(optarg, file_oflags);
     if (openStatus) {
-      if (!commandReturn) {
-          commandReturn = 1;
-        }
+      commandReturn = 1;
     }
     // reset the oflags
     file_oflags = 0;
@@ -195,8 +193,8 @@ int main (int argc, char **argv) {
           { 
             command_data cmd_data = parse_command(argc, argv, &optind);
             int ret = command(cmd_data);
-            if (ret > commandReturn) {
-              commandReturn = ret;
+            if (ret) {
+              commandReturn = 1;
             }
           }
           break;
@@ -207,7 +205,7 @@ int main (int argc, char **argv) {
             // int *p = 0;
             // *p = 0;
             int abortStatus = raiseAbortSignal();
-            if (abortStatus && !commandReturn) {
+            if (abortStatus) {
               commandReturn = 1;
             }
           }
@@ -224,7 +222,7 @@ int main (int argc, char **argv) {
         case CATCH:
           {
             int catchStatus = catchSignal(optarg);
-            if (catchStatus && !commandReturn) {
+            if (catchStatus) {
               commandReturn = 1;
             }
           }
@@ -233,7 +231,7 @@ int main (int argc, char **argv) {
         case IGNORE:
           {
             int ignoreStatus = ignoreSignal(optarg);
-            if (ignoreStatus && !commandReturn) {
+            if (ignoreStatus) {
               commandReturn = 1;
             }
           }
@@ -242,7 +240,7 @@ int main (int argc, char **argv) {
         case DEFAULT:
           {
             int defaultStatus = useDefaultSignal(optarg);
-            if (defaultStatus && !commandReturn) {
+            if (defaultStatus) {
               commandReturn = 1;
             }
           }
@@ -250,10 +248,9 @@ int main (int argc, char **argv) {
 
         case '?':
           // code for unrecognized options
-          if (!commandReturn) {
-            commandReturn = 1;
-          }
+          commandReturn = 1;
           break;
+
         default:
           break;
         }
@@ -263,16 +260,16 @@ int main (int argc, char **argv) {
           if (is_not_option(nextArg)) {
             fprintf(stderr, "Extra argument for %s: %s\n",
                 long_options[option_index].name, argv[optind]);
-            if (!commandReturn) {
-              commandReturn = 1;
-            }
+            commandReturn = 1;
           }
         }
     }
 
   endFileDesc(); // free file descriptor array
   endStream(); // close standard stream copies
-  endCommand(wait_flag); // wait for child processes if wait_flag
+  int command_exit_status = endCommand(wait_flag); // wait if wait_flag is set
+  if (command_exit_status > 0)
+    commandReturn = command_exit_status;
 
   return commandReturn;
 }
