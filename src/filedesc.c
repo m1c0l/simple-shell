@@ -57,6 +57,8 @@ int openFile(char* filename, int oflag) {
     curr->readable = 1;
     curr->writable = 0;
   }
+  // Store that this isn't a pipe end
+  curr->isPipeEnd = 0;
   
   return 0;
 }
@@ -79,6 +81,42 @@ int closeFile(char* fd_string) {
 
   /* mark this file descriptor as invalid */
   fileDesc[fd].fd = -1;
+
+  return 0;
+}
+
+
+int openPipe() {
+  if ((size_t)(currFileDesc + 1) > fileDescSize) {
+    fileDescSize *= 2;
+    fileDesc = (file*)realloc(fileDesc, sizeof(file) * fileDescSize);
+    if (fileDesc == NULL) {
+      fprintf(stderr, "Error allocating memory: %s\n", strerror(errno));
+      exit(1);
+    }
+  }
+
+  int pipe_fd[2];
+  if (pipe(pipe_fd) == -1) {
+    perror("pipe");
+    return -1;
+  }
+
+  currFileDesc++;
+  // Store fd info for read end of the pipe
+  file* curr = &fileDesc[currFileDesc];
+  curr->fd = pipe_fd[0];
+  curr->readable = 1;
+  curr->writable = 0;
+  curr->isPipeEnd = 1;
+
+  currFileDesc++;
+  // Store fd info for read end of the pipe
+  curr = &fileDesc[currFileDesc];
+  curr->fd = pipe_fd[1];
+  curr->readable = 0;
+  curr->writable = 1;
+  curr->isPipeEnd = 1;
 
   return 0;
 }

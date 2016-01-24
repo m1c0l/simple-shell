@@ -15,6 +15,8 @@ command_data parse_command(int argc, char **argv, int *opt);
 /* Executes a command */
 int command(command_data data);
 
+int openPipe();
+
 // whether --wait was entered or not
 extern int wait_flag;
 

@@ -38,7 +38,8 @@ enum Options {
   CATCH,
   IGNORE,
   DEFAULT,
-  PAUSE
+  PAUSE,
+  PIPE
 };
 
 static int verbose_flag;
@@ -69,6 +70,7 @@ static struct option long_options[] =
   {"wait", no_argument, 0, WAIT},
   {"catch", required_argument, 0, CATCH},
   {"ignore", required_argument, 0, IGNORE},
+  {"pipe", no_argument, 0, PIPE},
   {"default", required_argument, 0, DEFAULT},
   {0, 0, 0, 0}
 };
@@ -252,6 +254,15 @@ int main (int argc, char **argv) {
           {
             int defaultStatus = useDefaultSignal(optarg);
             if (defaultStatus && !commandReturn) {
+              commandReturn = 1;
+            }
+          }
+          break;
+
+        case PIPE:
+          {
+            int pipeStatus = openPipe();
+            if (pipeStatus && !commandReturn) {
               commandReturn = 1;
             }
           }

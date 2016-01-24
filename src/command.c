@@ -108,7 +108,7 @@ int execute_command(command_data cmd_data) {
   pid = fork();
   if (pid == -1) {
     fprintf(stderr, "Error forking child: %s\n", strerror(errno));
-    return -1;
+    return 1;
   }
 
   if (pid == 0) {
