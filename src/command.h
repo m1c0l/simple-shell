@@ -17,7 +17,12 @@ int command(command_data data);
 
 int openPipe();
 
-// whether --wait was entered or not
-extern int wait_flag;
+/* Wait for all child processes to finish */
+int wait_all(void);
+
+/* Allocate storage for argv array */
+void initCommand(void);
+/* Free storage, and wait for child process if wait_flag is set */
+int endCommand(int wait_flag);
 
 #endif /* COMMAND_H */

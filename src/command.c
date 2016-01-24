@@ -11,8 +11,14 @@
 #include "stream.h"
 #include "util.h"
 
-// redeclare so this file recognizes
-// int wait_flag;
+typedef struct {
+  char **argv;
+  pid_t pid;
+} wait_t;
+
+wait_t *wait_data;
+int wait_data_index = 0;
+size_t wait_data_size = 64;
 
 int execute_command(command_data cmd_data);
 
@@ -32,7 +38,6 @@ int command(command_data data) {
   if (ret)
     fprintf(stderr, "%s: %s\n", data.argv[0], strerror(errno));
 
-  free(data.argv); // malloc called in parse_command()
   if (reset_streams() == -1) {
     return 1;
   }
@@ -79,6 +84,7 @@ command_data parse_command(int argc, char **argv, int *opt) {
     return cmd_data;
   }
   cmd_data.err = fd_number;
+
   /* size of command's argv */
   int argv_size = arg_count - 3;
 
@@ -86,7 +92,6 @@ command_data parse_command(int argc, char **argv, int *opt) {
   cmd_data.argv = (char**)malloc(sizeof(char*) * (argv_size+1));
   if (cmd_data.argv == NULL) {
     fprintf(stderr, "Memory error: %s\n", strerror(errno));
-    cmd_data.argv = NULL;
     return cmd_data;
   }
   cmd_data.argv[argv_size] = NULL;
@@ -97,14 +102,15 @@ command_data parse_command(int argc, char **argv, int *opt) {
     opt_ind++;
   }
 
-  /* set new optind and returns the parsed data */
+  /* set new optind */
   *opt = opt_ind;
+
+  /* return the parsed data */
   return cmd_data;
 }
 
 int execute_command(command_data cmd_data) {
   int pid;
-  int status;
   pid = fork();
   if (pid == -1) {
     fprintf(stderr, "Error forking child: %s\n", strerror(errno));
@@ -118,22 +124,81 @@ int execute_command(command_data cmd_data) {
     return 1;
   }
   else {
-    // Code for --wait
-    if (wait_flag) {  
-      if (waitpid(pid, &status, 0) == -1) {
-        fprintf(stderr, "Error waiting for child: %s\n", strerror(errno));
-        return 1;
+    /* store child process info */
+    if ((size_t)wait_data_index >= wait_data_size) {
+      wait_data_size *= 2;
+      wait_data = (wait_t*)realloc(wait_data, sizeof(wait_t) * wait_data_size);
+      if (wait_data == NULL) {
+        fprintf(stderr, "Error allocating memory: %s\n", strerror(errno));
+        exit(1);
       }
-      int exitStatus = WEXITSTATUS(status);
-      // TODO: maybe change from stdout to a stdout copy
-      fprintf(stdout ,"%d", exitStatus);
-      for (int i = 0; cmd_data.argv[i] != NULL; i++) {
-        fprintf(stdout, " %s", cmd_data.argv[i]);
-      }
-      fprintf(stdout, "\n");
-      return exitStatus;
-    }  
-
+    }
+    wait_data[wait_data_index].pid = pid;
+    wait_data[wait_data_index].argv = cmd_data.argv;
+    wait_data_index++;
     return 0;
   }
+}
+
+void initCommand(void) {
+  wait_data = (wait_t*)malloc(sizeof(wait_t) * wait_data_size);
+  if (wait_data == NULL) {
+    fprintf(stderr, "Error allocating memory: %s\n", strerror(errno));
+    exit(1);
+  }
+}
+
+void free_wait_data(void) {
+  /* Free dynamic memory */
+  for (int i = 0; i < wait_data_index; i++) {
+    free(wait_data[i].argv);
+  }
+  free(wait_data);
+}
+
+int endCommand(int wait_flag) {
+  if (!wait_flag) {
+    free_wait_data();
+    return 0;
+  }
+
+  pid_t pid;
+  int status;
+  int max_status;
+
+  while ((pid = waitpid(-1, &status, 0))) {
+    if (errno == ECHILD) // all children reaped
+      break;
+
+    if (pid == -1) {
+      printf("Error waiting for child: %s\n", strerror(errno));
+      return 1;
+    }
+
+    int exit_status = WEXITSTATUS(status);
+    if (exit_status > max_status)
+      max_status = exit_status;
+
+    /* find the wait_data with the current pid */
+    int index;
+    for (index = 0; index < wait_data_index; index++)
+      if (wait_data[index].pid == pid)
+        break;
+    if (index >= wait_data_index) { // make sure we found the pid
+      fprintf(stderr, "Process ID not found: %d\n", pid);
+      return 1;
+    }
+
+    /* Print exit status and command's argv */
+    wait_t *curr = &wait_data[index];
+    printf("%d", exit_status);
+    for (int i = 0; curr->argv[i] != NULL; i++) {
+      printf(" %s", curr->argv[i]);
+    }
+    printf("\n");
+  }
+
+  free_wait_data();
+
+  return max_status;
 }
