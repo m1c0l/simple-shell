@@ -4,10 +4,11 @@ OPTIMIZE = -g# -O2
 
 all: simpsh
 
-SOURCES = main.c filedesc.c command.c util.c stream.c
+_SOURCES = main.c filedesc.c command.c util.c stream.c
 _HEADERS = filedesc.h command.h stream.h util.h
-HEADERS = $(HEADERS:%=src/%)
-OBJECTS = $(SOURCES:%.c=obj/%.o)
+SOURCES = $(_SOURCES:%=src/%)
+HEADERS = $(_HEADERS:%=src/%)
+OBJECTS = $(_SOURCES:%.c=obj/%.o)
 
 simpsh: obj $(OBJECTS)
 	$(CC) $(CFLAGS) $(OPTIMIZE) -o $@ $(OBJECTS)
@@ -15,10 +16,8 @@ simpsh: obj $(OBJECTS)
 obj:
 	mkdir -p $@
 
-obj/%.o: src/%.c
+obj/%.o: src/%.c $(HEADERS)
 	$(CC) $(CFLAGS) $(OPTIMIZE) -c $< -o $@
-
-$(SOURCES): $(_HEADERS)
 
 
 TESTS = test.sh piazza-tests.sh
