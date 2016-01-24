@@ -18,10 +18,7 @@ obj:
 obj/%.o: src/%.c
 	$(CC) $(CFLAGS) $(OPTIMIZE) -c $< -o $@
 
-main.c filedesc.c command.c stream.c: src/filedesc.h
-main.c command.c: src/command.h
-main.c command.c util.c: src/util.h
-main.c command.c filedesc.c stream.c: src/stream.h
+$(SOURCES): $(_HEADERS)
 
 
 TESTS = test.sh piazza-tests.sh
