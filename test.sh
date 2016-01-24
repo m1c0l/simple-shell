@@ -158,6 +158,44 @@ test -e $tmp
 should_succeed "File exists after opening with --creat"
 
 
+# --append
+echo $text | tee $tmp > $tmp2
+output=$(./simpsh --rdonly $tmp --append --wronly $tmp2 --command 0 1 1 cat)
+should_succeed "Using correct syntax with --append"
+test "$(cat $tmp $tmp)" = "$(cat $tmp2)" # $tmp2 contains 2 copies of $tmp
+should_succeed "writing to --append file appends correctly"
+
+
+output=$(./simpsh --verbose --append --creat --dsync --rdwr $tmp)
+should_succeed "Opening a file can take several oflags"
+test "$(printf -- "--append\n--creat\n--dsync\n--rdwr $tmp")" = "$output"
+should_succeed "Opening a file can take several oflags"
+
+# oflag syntax
+rm $tmp
+output=$(./simpsh --rdonly $tmp --creat 2>&1)
+should_fail "Trailing oflags are ignored"
+output=$(./simpsh --creat --rdonly $tmp2 --wronly $tmp 2>&1)
+should_fail "Oflags only apply to next opened file"
+echo $text > $tmp
+output=$(./simpsh --trunc --creat --verbose --rdonly $tmp)
+should_succeed "--creat works when not directly before next opened file"
+test "$(cat $tmp)" = ""
+should_succeed "--trunc works when not directly before next opened file"
+
+
+# --close
+output=$(./simpsh --rdonly $tmp --wronly $tmp2 --close 0 \
+  --command 0 1 1 cat 2>&1)
+should_fail "Using a --close'd file is an error"
+output=$(./simpsh --rdonly $tmp --wronly $tmp2 --wronly $tmp3 --close 2 \
+  --command 0 1 1 cat)
+should_succeed "Using --close on a unused file is fine"
+output=$(./simpsh --rdonly $tmp --wronly $tmp2 --wronly $tmp3 \
+  --command 0 1 1 cat --close 0 --close 1 --close 2 2>&1)
+should_succeed "Can close files after using them"
+
+
 rm $tmp $tmp2 $tmp3
 
 if $all_passed; then
