@@ -148,28 +148,54 @@ void initCommand(void) {
   }
 }
 
-int endCommand(int wait_flag) {
-  int i;
-  /*
-  int pid;
-  int status;
-  if (waitpid(pid, &status, 0) == -1) {
-    fprintf(stderr, "Error waiting for child: %s\n", strerror(errno));
-    return 1;
-  }
-  int exitStatus = WEXITSTATUS(status);
-  // TODO: maybe change from stdout to a stdout copy
-  fprintf(stdout ,"%d", exitStatus);
-  for (int i = 0; cmd_data.argv[i] != NULL; i++) {
-    fprintf(stdout, " %s", cmd_data.argv[i]);
-  }
-  fprintf(stdout, "\n");
-  */
-
+void free_wait_data(void) {
   /* Free dynamic memory */
-  for (int i = 0; i < wait_data_index; i++)
+  for (int i = 0; i < wait_data_index; i++) {
     free(wait_data[i].argv);
+  }
   free(wait_data);
+}
+
+int endCommand(int wait_flag) {
+  if (!wait_flag) {
+    free_wait_data();
+    return 0;
+  }
+
+  pid_t pid;
+  int status;
+
+  while ((pid = waitpid(-1, &status, 0))) {
+    if (errno == ECHILD) // all children reaped
+      break;
+
+    if (pid == -1) {
+      printf("Error waiting for child: %s\n", strerror(errno));
+      return 1;
+    }
+
+    int exit_status = WEXITSTATUS(status);
+
+    /* find the wait_data with the current pid */
+    int index;
+    for (index = 0; index < wait_data_index; index++)
+      if (wait_data[index].pid == pid)
+        break;
+    if (index >= wait_data_index) { // make sure we found the pid
+      fprintf(stderr, "Process ID not found: %d\n", pid);
+      return 1;
+    }
+
+    /* Print exit status and command's argv */
+    wait_t *curr = &wait_data[index];
+    printf("%d", exit_status);
+    for (int i = 0; curr->argv[i] != NULL; i++) {
+      printf(" %s", curr->argv[i]);
+    }
+    printf("\n");
+  }
+
+  free_wait_data();
 
   return 0; //exitStatus;
 }
