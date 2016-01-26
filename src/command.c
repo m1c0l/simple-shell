@@ -170,8 +170,8 @@ int endCommand(int wait_flag) {
   }
 
   pid_t pid;
-  int status;
-  int max_status;
+  int status = 0;
+  int max_status = 0;
 
   while ((pid = waitpid(-1, &status, 0))) {
     if (errno == ECHILD) // all children reaped
