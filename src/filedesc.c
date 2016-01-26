@@ -64,8 +64,6 @@ int openFile(char* filename, int oflag) {
     curr->readable = 1;
     curr->writable = 0;
   }
-  // Store that this isn't a pipe end
-  curr->isPipeEnd = 0;
   
   return 0;
 }
@@ -115,15 +113,13 @@ int openPipe() {
   curr->fd = pipe_fd[0];
   curr->readable = 1;
   curr->writable = 0;
-  curr->isPipeEnd = 1;
 
   currFileDesc++;
-  // Store fd info for read end of the pipe
+  // Store fd info for write end of the pipe
   curr = &fileDesc[currFileDesc];
   curr->fd = pipe_fd[1];
   curr->readable = 0;
   curr->writable = 1;
-  curr->isPipeEnd = 1;
 
   return 0;
 }

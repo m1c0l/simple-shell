@@ -5,7 +5,6 @@ typedef struct {
   int fd;
   int readable;
   int writable;
-  int isPipeEnd;
 } file;
 
 void initFileDesc(void);
