@@ -18,7 +18,7 @@ function should_fail() {
     echo "FAILURE"
     all_passed=false
     if $EXIT_ON_FAILURE; then
-      rm $tmp $tmp2 $tmp3
+      rm $tmp $tmp2 $tmp3 $tmp4
       exit 1
     fi
   else
@@ -36,7 +36,7 @@ function should_succeed() {
     echo "FAILURE"
     all_passed=false
     if $EXIT_ON_FAILURE; then
-      rm $tmp $tmp2 $tmp3
+      rm $tmp $tmp2 $tmp3 $tmp4
       exit 1
     fi
   else
@@ -58,7 +58,8 @@ function check_valgrind() {
 tmp=$(mktemp)
 tmp2=$(mktemp)
 tmp3=$(mktemp)
-text="some text"
+tmp4=$(mktemp)
+text=printf "a\nB\nd\nc"
 
 
 # --verbose
@@ -302,7 +303,59 @@ should_succeed "--catch 9 and --ignore 10 don't stop --abort"
 
 # ========================================================================
 
-rm $tmp $tmp2 $tmp3
+# Pipes
+./simpsh --pipe --pipe --pipe
+should_succeed "Can create a pipe"
+output=$(./simpsh --pipe --wronly $tmp --command 0 2 2 cat)
+should_succeed "Can read from read end of pipe"
+output=$(./simpsh --pipe --rdonly $tmp --command 2 1 1 cat)
+should_succeed "Can write to write end of pipe"
+output=$(./simpsh --pipe --rdonly $tmp --command 1 2 2 cat 2>&1)
+should_fail "Cannot write to read end of pipe"
+output=$(./simpsh --pipe --rdonly $tmp --command 1 1 1 cat 2>&1)
+should_fail "Cannot read from write end of pipe"
+
+echo $text > $tmp
+cmd1="cat"
+cmd2="tr a-z A-Z"
+output=$(./simpsh --rdonly $tmp --trunc --wronly $tmp2 --pipe \
+  --command 0 3 3 $cmd1 --command 2 1 1 $cmd2 --wait)
+should_succeed "Can use a basic pipe command"
+test "$(cat $tmp2)" = "$($cmd1 < $tmp | $cmd2)"
+should_succeed "Piped command has correct output"
+
+echo $text > $tmp
+cmd1="cat"
+cmd2="tr A-Z a-z"
+output=$(./simpsh --rdonly $tmp --trunc --wronly $tmp2 --pipe \
+  --command 0 3 3 $cmd1 --command 2 1 1 $cmd2 --wait)
+should_succeed "Can use a basic pipe command"
+test "$(cat $tmp2)" = "$($cmd1 < $tmp | $cmd2)"
+should_succeed "Piped command has correct output"
+
+printf "1\n2\n3\n" > $tmp4
+output=$(./simpsh \
+  --rdonly $tmp \
+  --pipe \
+  --pipe \
+  --creat --trunc --wronly $tmp2 \
+  --creat --trunc --wronly $tmp3 \
+  --command 3 5 6 tr A-Z a-z \
+  --command 0 2 6 sort \
+  --command 1 4 6 cat $tmp4 - \
+  --wait)
+should_succeed "Can handle Eggert's example"
+test "$(cat $tmp2)" = "$(sort < $tmp | cat $tmp4 - | tr A-Z a-z)"
+should_succeed "Has correct output for Eggert's example"
+
+check_valgrind "./simpsh --rdonly $tmp --pipe --pipe --creat --trunc \
+  --wronly $tmp2 --creat --trunc --wronly $tmp3 --command 3 5 6 tr A-Z a-z \
+  --command 0 2 6 sort --command 1 4 6 cat $tmp4 - --wait"
+should_succeed "No memory leaks on Eggert's example"
+
+
+
+rm $tmp $tmp2 $tmp3 $tmp4
 
 if $all_passed; then
   echo "Success"
