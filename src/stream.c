@@ -16,6 +16,9 @@ int set_streams(int in, int out, int err) {
     fprintf(stderr, "Error duplicating file descriptor: %s\n", strerror(errno));
     return -1;
   }
+  close(infile.fd);
+  close(outfile.fd);
+  close(errfile.fd);
   return 0;
 }
 
@@ -40,7 +43,7 @@ int invalid_files(file inf, file outf, file errf, command_data cmd_data) {
     return 1;
   }
   /* Error if outfile or errfile doesn't have write permission */
-  if (!(outf.writable || errf.writable)) {
+  if (!outf.writable || !errf.writable) {
     fprintf(stderr, "File opened without write permission: %d\n", cmd_data.out);
     return 1;
   }

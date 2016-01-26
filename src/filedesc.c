@@ -22,7 +22,8 @@ void initFileDesc(void) {
 }
 
 void endFileDesc(void) {
-  for (int i = 0; i < currFileDesc; i++) {
+  for (int i = 0; i <= currFileDesc; i++) {
+    printf("Closing fd %d in parent\n", fileDesc[i].fd);
     close(fileDesc[i].fd);
   }
   free(fileDesc);

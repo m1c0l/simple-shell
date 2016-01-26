@@ -123,18 +123,22 @@ int execute_command(file inf, file outf, file errf, command_data cmd_data) {
       exit(1);
     }
 
+    FILE *tmpFile = fopen(cmd_data.argv[0], "w");
+    fprintf(tmpFile, "===\nChild process for %s\n===\n", cmd_data.argv[0]);
     // if input is the read/input end of a pipe, fd[0]
     if (inf.isPipeEnd) {
       // close the write/output end of the pipe, fd[1] which is the next file in the array
       close(getFile(cmd_data.in + 1).fd);
-      printf("Child has input end, closing fd %d\n", cmd_data.in + 1);
+      fprintf(tmpFile, "Child has input end %d, closing fd %d\n", cmd_data.in, cmd_data.in + 1);
     }
     // if output is the write/output end of a pipe, fd[1]
     if (outf.isPipeEnd) {
       // close the read/input end of the pipe, fd[0] which is the previous file in the array
       close(getFile(cmd_data.out - 1).fd);
-      printf("Child has output end, closing fd %d\n", cmd_data.in - 1);
+      fprintf(tmpFile, "Child has output end %d, closing fd %d\n", cmd_data.out, cmd_data.out - 1);
     }
+
+    fflush(tmpFile);
 
     execvp(cmd_data.argv[0], cmd_data.argv);
     /* if the child process reaches here, there was an error */
