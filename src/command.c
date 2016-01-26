@@ -116,29 +116,12 @@ int execute_command(file inf, file outf, file errf, command_data cmd_data) {
     return 1;
   }
 
-  /* Child process */
   if (pid == 0) {
+    /* Child process */
 
     if (set_streams(cmd_data.in, cmd_data.out, cmd_data.err) == -1) {
       exit(1);
     }
-
-    FILE *tmpFile = fopen(cmd_data.argv[0], "w");
-    fprintf(tmpFile, "===\nChild process for %s\n===\n", cmd_data.argv[0]);
-    // if input is the read/input end of a pipe, fd[0]
-    if (inf.isPipeEnd) {
-      // close the write/output end of the pipe, fd[1] which is the next file in the array
-      close(getFile(cmd_data.in + 1).fd);
-      fprintf(tmpFile, "Child has input end %d, closing fd %d\n", cmd_data.in, cmd_data.in + 1);
-    }
-    // if output is the write/output end of a pipe, fd[1]
-    if (outf.isPipeEnd) {
-      // close the read/input end of the pipe, fd[0] which is the previous file in the array
-      close(getFile(cmd_data.out - 1).fd);
-      fprintf(tmpFile, "Child has output end %d, closing fd %d\n", cmd_data.out, cmd_data.out - 1);
-    }
-
-    fflush(tmpFile);
 
     execvp(cmd_data.argv[0], cmd_data.argv);
     /* if the child process reaches here, there was an error */
@@ -146,22 +129,7 @@ int execute_command(file inf, file outf, file errf, command_data cmd_data) {
     return 1;
   }
   else {
-    /*
-    // if input is the read/input end of a pipe, fd[0]
-    if (inf.isPipeEnd) {
-      close(inf.fd);
-      // close the write/output end of the pipe, fd[1] which is the next file in the array
-      close(getFile(cmd_data.in + 1).fd);
-      printf("Parent saw input end, closing %d and %d\n", cmd_data.in, cmd_data.in + 1);
-    }
-    // if output is the write/output end of a pipe, fd[1]
-    if (outf.isPipeEnd) {
-      close(outf.fd);
-      // close the read/input end of the pipe, fd[0] which is the previous file in the array
-      close(getFile(cmd_data.out - 1).fd);
-      printf("Parent saw output end, closing %d and %d\n", cmd_data.out, cmd_data.out - 1);
-    }
-    */
+    /* Parent process */
 
     /* store child process info */
     if ((size_t)wait_data_index >= wait_data_size) {

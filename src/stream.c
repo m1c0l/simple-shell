@@ -16,9 +16,8 @@ int set_streams(int in, int out, int err) {
     fprintf(stderr, "Error duplicating file descriptor: %s\n", strerror(errno));
     return -1;
   }
-  close(infile.fd);
-  close(outfile.fd);
-  close(errfile.fd);
+
+  close_all_files();
   return 0;
 }
 

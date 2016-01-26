@@ -11,8 +11,11 @@ typedef struct {
 void initFileDesc(void);
 void endFileDesc(void);
 
+
 int openFile(char* filename, int oflag);
 int closeFile(char* fd_string);
+
+void close_all_files(void);
 
 file getFile(int index);
 

@@ -59,7 +59,7 @@ should_fail "using a non existent file descriptor reports an error"
 output=$(./simpsh \
   --verbose \
   --rdonly $tmp \
-  --wronly $tmp2 \
+  --trunc --wronly $tmp2 \
   --command 1 2 3 echo foo \
   --command 0 1 1 echo foo 2>&1)
 

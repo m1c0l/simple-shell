@@ -21,11 +21,14 @@ void initFileDesc(void) {
   }
 }
 
-void endFileDesc(void) {
+void close_all_files(void) {
   for (int i = 0; i <= currFileDesc; i++) {
-    printf("Closing fd %d in parent\n", fileDesc[i].fd);
     close(fileDesc[i].fd);
   }
+}
+
+void endFileDesc(void) {
+  close_all_files();
   free(fileDesc);
 }
 
