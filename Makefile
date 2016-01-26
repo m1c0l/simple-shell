@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -std=gnu99 -Wall -Wextra -Wno-unused-parameter
-OPTIMIZE = -g# -O2
+OPTIMIZE = -O2
 
 all: simpsh
 
@@ -20,7 +20,7 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS)
 	$(CC) $(CFLAGS) $(OPTIMIZE) -c $< -o $@
 
 
-TESTS = test.sh piazza-tests.sh
+TESTS = test.sh #piazza-tests.sh
 check: simpsh
 	for test in $(TESTS); do \
 		./$$test || exit; \

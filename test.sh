@@ -47,7 +47,7 @@ function should_succeed() {
 
 # Valgrind
 function check_valgrind() {
-  valgrind="valgrind --leak-check=full --show-leak-kinds=all"
+  valgrind="valgrind --leak-check=full"
   simpsh="$1"
   output=$($valgrind $simpsh 2>&1)
   [[ "$output" =~ "no leaks are possible" ]]
