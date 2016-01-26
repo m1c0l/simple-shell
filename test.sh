@@ -1,5 +1,7 @@
 #!/bin/bash
 
+EXIT_ON_FAILURE=true
+
 # debug statements
 if [ "$1" = "--debug" ]; then
   set -x
@@ -15,7 +17,10 @@ function should_fail() {
   if [ $result -eq 0 ]; then
     echo "FAILURE"
     all_passed=false
-    exit 1
+    if $EXIT_ON_FAILURE; then
+      rm $tmp $tmp2 $tmp3
+      exit 1
+    fi
   else
     echo
     return 0
@@ -30,7 +35,10 @@ function should_succeed() {
   if [ $result -ne 0 ]; then
     echo "FAILURE"
     all_passed=false
-    exit 1
+    if $EXIT_ON_FAILURE; then
+      rm $tmp $tmp2 $tmp3
+      exit 1
+    fi
   else
     echo
     return 0
@@ -81,7 +89,7 @@ should_succeed "nonnumber file descriptors should report and error"
 # proper redirection
 random="weoifjdklfs"
 output=$(./simpsh --rdonly $tmp --trunc --wronly $tmp2 --trunc --wronly $tmp3 \
-  --command 0 1 2 ls $tmp $random 2>&1)
+  --command 0 1 2 ls $tmp $random --wait 2>&1)
 test "$(cat $tmp2)" = "$tmp"
 should_succeed "writes to stdout correctly"
 [[ "$(cat $tmp3)" =~ "No such file or directory" ]]
