@@ -203,6 +203,8 @@ output=$(./simpsh --rdonly $tmp --wronly $tmp2 --wronly $tmp3 \
 should_succeed "Can close files after using them"
 
 
+# ========================================================================
+
 rm $tmp $tmp2 $tmp3
 
 if $all_passed; then
