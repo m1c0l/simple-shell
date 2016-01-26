@@ -130,7 +130,7 @@ int execute_command(file inf, file outf, file errf, command_data cmd_data) {
       printf("Child has input end, closing fd %d\n", cmd_data.in + 1);
     }
     // if output is the write/output end of a pipe, fd[1]
-    else if (outf.isPipeEnd) {
+    if (outf.isPipeEnd) {
       // close the read/input end of the pipe, fd[0] which is the previous file in the array
       close(getFile(cmd_data.out - 1).fd);
       printf("Child has output end, closing fd %d\n", cmd_data.in - 1);
@@ -142,6 +142,7 @@ int execute_command(file inf, file outf, file errf, command_data cmd_data) {
     return 1;
   }
   else {
+    /*
     // if input is the read/input end of a pipe, fd[0]
     if (inf.isPipeEnd) {
       close(inf.fd);
@@ -150,12 +151,13 @@ int execute_command(file inf, file outf, file errf, command_data cmd_data) {
       printf("Parent saw input end, closing %d and %d\n", cmd_data.in, cmd_data.in + 1);
     }
     // if output is the write/output end of a pipe, fd[1]
-    else if (outf.isPipeEnd) {
+    if (outf.isPipeEnd) {
       close(outf.fd);
       // close the read/input end of the pipe, fd[0] which is the previous file in the array
       close(getFile(cmd_data.out - 1).fd);
       printf("Parent saw output end, closing %d and %d\n", cmd_data.out, cmd_data.out - 1);
     }
+    */
 
     /* store child process info */
     if ((size_t)wait_data_index >= wait_data_size) {

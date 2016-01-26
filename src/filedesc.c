@@ -22,6 +22,9 @@ void initFileDesc(void) {
 }
 
 void endFileDesc(void) {
+  for (int i = 0; i < currFileDesc; i++) {
+    close(fileDesc[i].fd);
+  }
   free(fileDesc);
 }
 
