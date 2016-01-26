@@ -79,7 +79,7 @@ should_fail "nonnumber file descriptors should fail"
 should_succeed "nonnumber file descriptors should report and error"
 
 # proper redirection
-random=$RANDOM
+random="weoifjdklfs"
 output=$(./simpsh --rdonly $tmp --trunc --wronly $tmp2 --trunc --wronly $tmp3 \
   --command 0 1 2 ls $tmp $random 2>&1)
 test "$(cat $tmp2)" = "$tmp"

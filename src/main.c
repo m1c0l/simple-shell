@@ -8,7 +8,6 @@
 
 #include "filedesc.h"
 #include "command.h"
-#include "stream.h"
 #include "signal_handler.h"
 #include "util.h"
 
@@ -95,7 +94,6 @@ void parseOflags(int oflag) {
 
 int main (int argc, char **argv) {
   initFileDesc(); // allocate file descriptor array
-  initStream(); // create copies of standard streams
   initCommand(); // allocate argv[] array
   signalHandlerInit(); // initialize the sigaction object
 
@@ -277,7 +275,6 @@ int main (int argc, char **argv) {
     }
 
   endFileDesc(); // free file descriptor array
-  endStream(); // close standard stream copies
   int command_exit_status = endCommand(wait_flag); // wait if wait_flag is set
   if (command_exit_status > 0)
     commandReturn = command_exit_status;

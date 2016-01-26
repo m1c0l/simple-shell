@@ -27,40 +27,14 @@ int command(command_data cmd_data) {
   if (cmd_data.argv == NULL)
     return 1;
 
-
   file inf = getFile(cmd_data.in),
        outf = getFile(cmd_data.out),
        errf = getFile(cmd_data.err);
 
-  /* Error if infile doesn't have read permission */
-  if (!inf.readable) {
-    fprintf(stderr, "File opened without read permission: %d\n", cmd_data.in);
+  if (invalid_files(inf, outf, errf, cmd_data)) {
     free(cmd_data.argv);
     return 1;
   }
-  /* Error if outfile or errfile doesn't have write permission */
-  if (!(outf.writable || errf.writable)) {
-    fprintf(stderr, "File opened without write permission: %d\n", cmd_data.out);
-    free(cmd_data.argv);
-    return 1;
-  }
-
-  if (inf.fd == -1) {
-    fprintf(stderr, "Error using file descriptor: %d\n", cmd_data.in);
-    free(cmd_data.argv);
-    return 1;
-  }
-  if (outf.fd == -1) {
-    fprintf(stderr, "Error using file descriptor: %d\n", cmd_data.out);
-    free(cmd_data.argv);
-    return 1;
-  }
-  if (errf.fd == -1) {
-    fprintf(stderr, "Error using file descriptor: %d\n", cmd_data.err);
-    free(cmd_data.argv);
-    return 1;
-  }
-
 
   int ret = execute_command(inf, outf, errf, cmd_data);
 
