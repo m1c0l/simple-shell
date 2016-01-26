@@ -59,7 +59,7 @@ tmp=$(mktemp)
 tmp2=$(mktemp)
 tmp3=$(mktemp)
 tmp4=$(mktemp)
-text=printf "a\nB\nd\nc"
+text=$(printf "a\nB\nd\nc")
 
 
 # --verbose
