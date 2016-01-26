@@ -13,7 +13,7 @@ int get_file_desc(char *str) {
   int val = strtol(str, &endptr, 10);
   if ((errno == ERANGE && (val == INT_MAX || val == INT_MAX))
           || (errno != 0 && val == 0)) { // out of range
-      fprintf(stderr, "Bad file descriptor %s\n", str);
+      fprintf(stderr, "Bad file descriptor: %s\n", str);
       perror("strtol");
       return -1;
   }

@@ -80,7 +80,7 @@ should_succeed "nonnumber file descriptors should report and error"
 
 # proper redirection
 random=$RANDOM
-output=$(./simpsh --rdonly $tmp --wronly $tmp2 --wronly $tmp3 \
+output=$(./simpsh --rdonly $tmp --trunc --wronly $tmp2 --trunc --wronly $tmp3 \
   --command 0 1 2 ls $tmp $random 2>&1)
 test "$(cat $tmp2)" = "$tmp"
 should_succeed "writes to stdout correctly"

@@ -20,27 +20,50 @@ wait_t *wait_data;
 int wait_data_index = 0;
 size_t wait_data_size = 64;
 
-int execute_command(command_data cmd_data);
+int execute_command(file inf, file outf, file errf, command_data cmd_data);
 
-int command(command_data data) {
+int command(command_data cmd_data) {
   /* error parsing command */
-  if (data.argv == NULL)
+  if (cmd_data.argv == NULL)
     return 1;
 
-  if (set_streams(data.in, data.out, data.err) == -1) {
-    reset_streams();
-    free(data.argv);
+
+  file inf = getFile(cmd_data.in),
+       outf = getFile(cmd_data.out),
+       errf = getFile(cmd_data.err);
+
+  /* Error if infile doesn't have read permission */
+  if (!inf.readable) {
+    fprintf(stderr, "File opened without read permission: %d\n", cmd_data.in);
+    free(cmd_data.argv);
+    return 1;
+  }
+  /* Error if outfile or errfile doesn't have write permission */
+  if (!(outf.writable || errf.writable)) {
+    fprintf(stderr, "File opened without write permission: %d\n", cmd_data.out);
+    free(cmd_data.argv);
     return 1;
   }
 
-  int ret = execute_command(data);
-  /* if the command fails, write an error to the command's stderr */
-  if (ret)
-    fprintf(stderr, "%s: %s\n", data.argv[0], strerror(errno));
-
-  if (reset_streams() == -1) {
+  if (inf.fd == -1) {
+    fprintf(stderr, "Error using file descriptor: %d\n", cmd_data.in);
+    free(cmd_data.argv);
     return 1;
   }
+  if (outf.fd == -1) {
+    fprintf(stderr, "Error using file descriptor: %d\n", cmd_data.out);
+    free(cmd_data.argv);
+    return 1;
+  }
+  if (errf.fd == -1) {
+    fprintf(stderr, "Error using file descriptor: %d\n", cmd_data.err);
+    free(cmd_data.argv);
+    return 1;
+  }
+
+
+  int ret = execute_command(inf, outf, errf, cmd_data);
+
   return ret;
 }
 
@@ -109,24 +132,31 @@ command_data parse_command(int argc, char **argv, int *opt) {
   return cmd_data;
 }
 
-int execute_command(command_data cmd_data) {
+int execute_command(file inf, file outf, file errf, command_data cmd_data) {
+
   int pid;
   pid = fork();
   if (pid == -1) {
     fprintf(stderr, "Error forking child: %s\n", strerror(errno));
+    free(cmd_data.argv);
     return 1;
   }
 
-  file inFile = getFile(cmd_data.in), outFile = getFile(cmd_data.out), errFile = getFile(cmd_data.err);
+  /* Child process */
   if (pid == 0) {
+
+    if (set_streams(cmd_data.in, cmd_data.out, cmd_data.err) == -1) {
+      exit(1);
+    }
+
     // if input is the read/input end of a pipe, fd[0]
-    if (inFile.isPipeEnd) {
+    if (inf.isPipeEnd) {
       // close the write/output end of the pipe, fd[1] which is the next file in the array
       close(getFile(cmd_data.in + 1).fd);
       printf("Child has input end, closing fd %d\n", cmd_data.in + 1);
     }
     // if output is the write/output end of a pipe, fd[1]
-    else if (outFile.isPipeEnd) {
+    else if (outf.isPipeEnd) {
       // close the read/input end of the pipe, fd[0] which is the previous file in the array
       close(getFile(cmd_data.out - 1).fd);
       printf("Child has output end, closing fd %d\n", cmd_data.in - 1);
@@ -139,15 +169,15 @@ int execute_command(command_data cmd_data) {
   }
   else {
     // if input is the read/input end of a pipe, fd[0]
-    if (inFile.isPipeEnd) {
-      close(inFile.fd);
+    if (inf.isPipeEnd) {
+      close(inf.fd);
       // close the write/output end of the pipe, fd[1] which is the next file in the array
       close(getFile(cmd_data.in + 1).fd);
       printf("Parent saw input end, closing %d and %d\n", cmd_data.in, cmd_data.in + 1);
     }
     // if output is the write/output end of a pipe, fd[1]
-    else if (outFile.isPipeEnd) {
-      close(outFile.fd);
+    else if (outf.isPipeEnd) {
+      close(outf.fd);
       // close the read/input end of the pipe, fd[0] which is the previous file in the array
       close(getFile(cmd_data.out - 1).fd);
       printf("Parent saw output end, closing %d and %d\n", cmd_data.out, cmd_data.out - 1);
