@@ -61,7 +61,7 @@ output=$(./simpsh \
   --rdonly $tmp \
   --trunc --wronly $tmp2 \
   --command 1 2 3 echo foo \
-  --command 0 1 1 echo foo 2>&1)
+  --command 0 1 1 echo foo --wait 2>&1)
 
 grep foo $tmp2 > /dev/null
 should_succeed "commands after failing commands should succeed"
@@ -133,7 +133,7 @@ echo bar > $tmp2
 
 # cat of $tmp should end up in the $tmp2
 ./simpsh --rdonly $tmp --trunc --wronly $tmp2 \
-  --command 0 1 1 cat
+  --command 0 1 1 cat --wait > /dev/null
 cat $tmp2 | grep foo > /dev/null && wc -l $tmp2 | grep 1 > /dev/null
 should_succeed "wronly should overwrite file"
 
