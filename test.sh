@@ -203,6 +203,103 @@ output=$(./simpsh --rdonly $tmp --wronly $tmp2 --wronly $tmp3 \
 should_succeed "Can close files after using them"
 
 
+# Signals
+
+output=$(./simpsh --default 2>&1)
+test $? -eq 1
+should_succeed "--default should err for no argument"
+
+output=$(./simpsh --default 1 2 2>&1)
+test $? -eq 1
+should_succeed "--default should err for extra argument"
+
+output=$(./simpsh --catch 2>&1)
+test $? -eq 1
+should_succeed "--catch should err for no argument"
+
+output=$(./simpsh --catch 1 2 2>&1)
+test $? -eq 1
+should_succeed "--catch should err for extra argument"
+
+output=$(./simpsh --ignore 2>&1)
+test $? -eq 1
+should_succeed "--ignore should err for no argument"
+
+output=$(./simpsh --ignore 1 2 2>&1)
+test $? -eq 1
+should_succeed "--ignore should err for extra argument"
+
+
+output=$(./simpsh --default 0 2>&1)
+test $? -eq 1
+should_succeed "--default should fail for non-existent signal 0"
+
+output=$(./simpsh --default 65 2>&1)
+test $? -eq 1
+should_succeed "--default should fail for non-existent signal > 64"
+
+output=$(./simpsh --catch 0 2>&1)
+test $? -eq 1
+should_succeed "--catch should fail for non-existent signal 0"
+
+output=$(./simpsh --catch 65 2>&1)
+test $? -eq 1
+should_succeed "--catch should fail for non-existent signal > 64"
+
+output=$(./simpsh --ignore 0 2>&1)
+test $? -eq 1
+should_succeed "--ignore should fail for non-existent signal 0"
+
+output=$(./simpsh --ignore 65 2>&1)
+test $? -eq 1
+should_succeed "--ignore should fail for non-existent signal > 64"
+
+
+
+output=$(./simpsh --abort 2>&1)
+test $? -eq 139
+should_succeed "--abort causes segmentation fault"
+
+output=$(./simpsh --default 11 --abort 2>&1)
+test $? -eq 139
+should_succeed "--default 11 uses --abort's default behaviour"
+
+output=$(./simpsh --catch 11 --abort 2>&1)
+test $? -eq 11
+should_succeed "--catch 11 catches --abort, returns correctly"
+[[ "$output" =~ "11 caught" ]]
+should_succeed "--catch 11 catches --abort, outputs correctly"
+
+output=$(./simpsh --default 11 --catch 11 --abort 2>&1)
+test $? -eq 11
+should_succeed "--default 11 and then --catch 11 catches --abort, returns correctly"
+[[ "$output" =~ "11 caught" ]]
+should_succeed "--default 11 and then --catch 11 catches --abort, outputs correctly"
+
+output=$(./simpsh --ignore 11 --abort 2>&1)
+test $? -eq 0
+should_succeed "--ignore 11 ignores --abort"
+
+output=$(./simpsh --abort --ignore 11 2>&1)
+test $? -eq 139
+should_succeed "--ignore 11 after --abort still aborts"
+
+output=$(./simpsh --ignore 11 --catch 11 --abort 2>&1)
+test $? -eq 11
+should_succeed "--ignore 11 and then --catch 11 catches --abort, returns correctly"
+[[ "$output" =~ "11 caught" ]]
+should_succeed "--ignore 11 and then --catch 11 catches --abort, outputs correctly"
+
+output=$(./simpsh --default 11 --catch 11 --abort 2>&1)
+test $? -eq 11
+should_succeed "--default 11 and then --catch 11 catches --abort, returns correctly"
+[[ "$output" =~ "11 caught" ]]
+should_succeed "--default 11 and then --catch 11 catches --abort, outputs correctly"
+
+output=$(./simpsh --catch 9 --ignore 10 --abort 2>&1)
+test $? -eq 139
+should_succeed "--catch 9 and --ignore 10 don't stop --abort"
+
 # ========================================================================
 
 rm $tmp $tmp2 $tmp3
