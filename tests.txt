@@ -1,0 +1,7 @@
+List of tests
+
+1.
+bash:
+time (base64 /dev/urandom | head -c 10000000 | sort | tr A-Z a-z  > /dev/null)
+simpsh:
+./simpsh --pipe --pipe --pipe --command 
