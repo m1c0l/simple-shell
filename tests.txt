@@ -19,7 +19,7 @@ time (base64 /dev/zero | head -c 20000000 | sed 'p;p;p;p;p;p;p;p;p;p;p;p;p;p;' |
 
 3.
 bash:
-time (sort out > out2 & sort out > out2 & sort out > out2 & sort out > out2 & wait)
+time (time sort out > out2 & time sort out > out2 & time sort out > out2 & time sort out > out2 & wait)
 simpsh:
 ./simpsh --profile \
 --wronly /dev/null \
