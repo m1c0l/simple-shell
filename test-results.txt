@@ -4,7 +4,256 @@
 
 2.
 
+bash:
+i)
+real	0m0.367s
+user	0m0.210s
+sys	0m0.021s
 
+real	0m2.442s
+user	0m0.219s
+sys	0m0.031s
+
+real	0m2.445s
+user	0m0.213s
+sys	0m0.037s
+
+real	0m2.446s
+user	0m0.220s
+sys	0m0.042s
+
+ii)
+real	0m0.349s
+user	0m0.196s
+sys	0m0.015s
+
+real	0m2.242s
+user	0m0.311s
+sys	0m0.033s
+
+real	0m2.244s
+user	0m0.355s
+sys	0m0.043s
+
+real	0m2.245s
+user	0m0.280s
+sys	0m0.031s
+
+iii)
+real	0m0.354s
+user	0m0.201s
+sys	0m0.012s
+
+real	0m2.274s
+user	0m0.221s
+sys	0m0.034s
+
+real	0m2.275s
+user	0m0.220s
+sys	0m0.018s
+
+real	0m2.276s
+user	0m0.213s
+sys	0m0.036s
+
+iv)
+real	0m0.354s
+user	0m0.201s
+sys	0m0.012s
+
+real	0m2.274s
+user	0m0.221s
+sys	0m0.034s
+
+real	0m2.275s
+user	0m0.220s
+sys	0m0.018s
+
+real	0m2.276s
+user	0m0.213s
+sys	0m0.036s
+
+v)
+real	0m3.594s
+user	0m0.213s
+sys	0m0.019s
+
+real	0m3.598s
+user	0m0.212s
+sys	0m0.027s
+
+real	0m3.843s
+user	0m0.214s
+sys	0m0.037s
+
+real	0m3.845s
+user	0m0.212s
+sys	0m0.038s
+
+simpsh:
+
+i)
+0 sort
+User: 0.253263s	System: 0.025530s
+0 sort
+User: 0.228348s	System: 0.035364s
+0 sort
+User: 0.207636s	System: 0.025825s
+0 sort
+User: 0.220917s	System: 0.032329s
+
+real	0m3.260s
+user	0m0.910s
+sys	0m0.121s
+
+ii)
+0 sort
+User: 0.196895s	System: 0.018082s
+0 sort
+User: 0.222501s	System: 0.019941s
+0 sort
+User: 0.224065s	System: 0.040085s
+0 sort
+User: 0.221559s	System: 0.045984s
+
+real	0m2.447s
+user	0m0.866s
+sys	0m0.126s
+
+iii)
+0 sort
+User: 0.193128s	System: 0.018105s
+0 sort
+User: 0.218935s	System: 0.023641s
+0 sort
+User: 0.222881s	System: 0.023350s
+0 sort
+User: 0.223289s	System: 0.025159s
+
+real	0m2.269s
+user	0m0.859s
+sys	0m0.092s
+
+iv)
+0 sort
+User: 0.206069s	System: 0.034001s
+0 sort
+User: 0.202854s	System: 0.032457s
+0 sort
+User: 0.204640s	System: 0.043628s
+0 sort
+User: 0.208861s	System: 0.021396s
+
+real	0m3.181s
+user	0m0.823s
+sys	0m0.134s
+
+v)
+0 sort
+User: 0.199965s	System: 0.012180s
+0 sort
+User: 0.240188s	System: 0.032431s
+0 sort
+User: 0.236583s	System: 0.030815s
+0 sort
+User: 0.219637s	System: 0.039744s
+
+real	0m2.409s
+user	0m0.897s
+sys	0m0.117s
+
+
+execline
+i)
+real 0.21
+user 0.20
+sys 0.00
+real 0.22
+user 0.21
+sys 0.00
+real 0.22
+user 0.21
+sys 0.00
+real 0.22
+user 0.21
+sys 0.00
+
+real	0m0.228s
+user	0m0.847s
+sys	0m0.038s
+
+ii)
+real 0.21
+user 0.20
+sys 0.00
+real 0.21
+user 0.20
+sys 0.00
+real 0.21
+user 0.20
+sys 0.00
+real 0.21
+user 0.20
+sys 0.00
+
+real	0m0.223s
+user	0m0.823s
+sys	0m0.040s
+
+iii)
+real 0.22
+user 0.21
+sys 0.00
+real 0.22
+user 0.21
+sys 0.00
+real 0.22
+user 0.21
+sys 0.01
+real 0.22
+user 0.21
+sys 0.00
+
+real	0m0.236s
+user	0m0.859s
+sys	0m0.042s
+
+iv)
+real 0.22
+user 0.21
+sys 0.00
+real 0.22
+user 0.21
+sys 0.00
+real 0.22
+user 0.21
+sys 0.01
+real 0.22
+user 0.21
+sys 0.00
+
+real	0m0.236s
+user	0m0.859s
+sys	0m0.042s
+
+v)
+
+real 0.22
+user 0.21
+sys 0.00
+real 0.22
+user 0.21
+sys 0.00
+real 0.22
+user 0.21
+sys 0.00
+real 0.22
+user 0.21
+sys 0.00
+
+real	0m0.229s
+user	0m0.861s
+sys	0m0.033s
 
 3.
 
