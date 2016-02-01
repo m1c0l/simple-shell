@@ -133,6 +133,13 @@ int main (int argc, char **argv) {
       }
 
       if (profile_flag) {
+        if (getrusage(RUSAGE_SELF, &curr_usage))
+          perror("getrusage");
+        printf("User: %dus\tSystem: %dus\n",
+            get_time_diff(prev_usage.ru_utime, curr_usage.ru_utime),
+            get_time_diff(prev_usage.ru_stime, curr_usage.ru_stime));
+
+        /* reset prev_usage timer */
         if (getrusage(RUSAGE_SELF, &prev_usage))
           perror("getrusage");
       }
@@ -281,14 +288,6 @@ int main (int argc, char **argv) {
         default:
           break;
         }
-
-      if (profile_flag) {
-        if (getrusage(RUSAGE_SELF, &curr_usage))
-          perror("getrusage");
-        printf("User: %dus\tSystem: %dus\n",
-            get_time_diff(prev_usage.ru_utime, curr_usage.ru_utime),
-            get_time_diff(prev_usage.ru_stime, curr_usage.ru_stime));
-      }
 
       if (optind < argc)
       {
