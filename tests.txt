@@ -19,15 +19,12 @@ time (base64 /dev/zero | head -c 20000000 | sed 'p;p;p;p;p;p;p;p;p;p;p;p;p;p;' |
 
 3.
 bash:
-time (base64 /dev/urandom | head -c 5000000 > out; sort out > out2; sort out > out2; sort out > out2; sort out > out2;)
+time (sort out > out2; sort out > out2; sort out > out2; sort out > out2;)
 simpsh:
 ./simpsh --profile \
---rdonly /dev/urandom \
---rdwr out \
 --wronly /dev/null \
---pipe \
 --rdonly out --wronly out2 \
 --rdonly out --wronly out2 \
 --rdonly out --wronly out2 \
 --rdonly out --wronly out2 \
---command 0 4 2 base64 --command 3 1 2 head -c 10000000 --command 5 6 2 sort --command 7 8 2 sort --command 9 10 2 sort --command 11 12 2 sort --wait
+--command 1 2 0 sort --command 3 4 0 sort --command 5 6 0 sort --command 7 8 0 sort --wait
