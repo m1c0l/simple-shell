@@ -3,6 +3,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "util.h"
 
 int is_not_option(char* s) {
@@ -33,9 +34,9 @@ int get_file_desc(char *str) {
   return val;
 }
 
-double get_time_diff(struct timeval prev, struct timeval curr) {
-  double million = 1000000.0;
-  double curr_time = curr.tv_sec + curr.tv_usec/million;
-  double prev_time = prev.tv_sec + prev.tv_usec/million;
+int get_time_diff(struct timeval prev, struct timeval curr) {
+  int million = pow(10, 6);
+  int curr_time = (curr.tv_sec * million) + curr.tv_usec;
+  int prev_time = (prev.tv_sec * million) + prev.tv_usec;
   return curr_time - prev_time;
 }
