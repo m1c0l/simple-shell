@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+time ./simpsh \
+--profile \
+--wronly /dev/null \
+--rdonly out --wronly out2 \
+--rdonly out --wronly out2 \
+--rdonly out --wronly out2 \
+--rdonly out --wronly out2 \
+--command 1 2 0 sort \
+--command 3 4 0 sort \
+--command 5 6 0 sort \
+--command 7 8 0 sort
