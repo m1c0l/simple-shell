@@ -5,6 +5,7 @@
 #include <string.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <sys/resource.h>
 
 #include "command.h"
 #include "filedesc.h"
@@ -172,6 +173,11 @@ int endCommand(int wait_flag) {
   pid_t pid;
   int status = 0;
   int max_status = 0;
+  struct rusage curr_usage, prev_usage;
+
+  if (getrusage(RUSAGE_CHILDREN, &prev_usage)) {
+    perror("getrusage");
+  }
 
   while ((pid = waitpid(-1, &status, 0))) {
     if (errno == ECHILD) // all children reaped
@@ -203,6 +209,14 @@ int endCommand(int wait_flag) {
       printf(" %s", curr->argv[i]);
     }
     printf("\n");
+
+    if (getrusage(RUSAGE_CHILDREN, &curr_usage)) {
+      perror("getrusage");
+    }
+    printf("User: %fs System: %f\ns",
+        get_time_diff(prev_usage.ru_utime, curr_usage.ru_utime),
+        get_time_diff(prev_usage.ru_stime, curr_usage.ru_stime));
+    prev_usage = curr_usage;
   }
 
   free_wait_data();
