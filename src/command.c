@@ -164,7 +164,7 @@ void free_wait_data(void) {
   free(wait_data);
 }
 
-int endCommand(int wait_flag) {
+int endCommand(int wait_flag, int profile_flag) {
   if (!wait_flag) {
     free_wait_data();
     return 0;
@@ -173,10 +173,14 @@ int endCommand(int wait_flag) {
   pid_t pid;
   int status = 0;
   int max_status = 0;
+
   struct rusage curr_usage, prev_usage;
 
-  if (getrusage(RUSAGE_CHILDREN, &prev_usage)) {
-    perror("getrusage");
+  /* sets prev_usage time to zero */
+  if (profile_flag) {
+    if (getrusage(RUSAGE_CHILDREN, &prev_usage)) {
+      perror("getrusage");
+    }
   }
 
   while ((pid = waitpid(-1, &status, 0))) {
@@ -210,13 +214,16 @@ int endCommand(int wait_flag) {
     }
     printf("\n");
 
-    if (getrusage(RUSAGE_CHILDREN, &curr_usage)) {
-      perror("getrusage");
+    if (profile_flag) {
+      if (getrusage(RUSAGE_CHILDREN, &curr_usage)) {
+        perror("getrusage");
+      }
+      printf("User: %fs System: %fs\n",
+          get_time_diff(prev_usage.ru_utime, curr_usage.ru_utime),
+          get_time_diff(prev_usage.ru_stime, curr_usage.ru_stime));
+
+      prev_usage = curr_usage;
     }
-    printf("User: %fs System: %f\ns",
-        get_time_diff(prev_usage.ru_utime, curr_usage.ru_utime),
-        get_time_diff(prev_usage.ru_stime, curr_usage.ru_stime));
-    prev_usage = curr_usage;
   }
 
   free_wait_data();

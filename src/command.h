@@ -22,7 +22,8 @@ int wait_all(void);
 
 /* Allocate storage for argv array */
 void initCommand(void);
-/* Free storage, and wait for child process if wait_flag is set */
-int endCommand(int wait_flag);
+/* Free storage, wait for child process if wait_flag is set, show usage
+ * information if profile_flag is set */
+int endCommand(int wait_flag, int profile_flag);
 
 #endif /* COMMAND_H */

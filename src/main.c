@@ -102,6 +102,7 @@ int main (int argc, char **argv) {
   /* Flags */
   int verbose_flag = 0;
   int wait_flag = 0;
+  int profile_flag = 0;
 
   int c;
   while (1)
@@ -258,6 +259,7 @@ int main (int argc, char **argv) {
           break;
 
         case PROFILE:
+          profile_flag = 1;
           break;
 
         case '?':
@@ -280,7 +282,7 @@ int main (int argc, char **argv) {
     }
 
   endFileDesc(); // free file descriptor array
-  int command_exit_status = endCommand(wait_flag); // wait if wait_flag is set
+  int command_exit_status = endCommand(wait_flag, profile_flag);
   if (command_exit_status > 0)
     commandReturn = command_exit_status;
 
