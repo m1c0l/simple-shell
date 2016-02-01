@@ -24,4 +24,4 @@ background {
   redirfd -w 1 /dev/null
   sort
 }
-wait ""
+/usr/local/cs/execline-2.1.4.5/bin/wait ""
