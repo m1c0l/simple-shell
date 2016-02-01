@@ -1,0 +1,22 @@
+#!/home/richard/Downloads/execline-2.1.4.5/execlineb
+background {
+  redirfd -w 1 out
+  redirfd -w 2 error
+  pipeline base64 /dev/urandom ""
+  pipeline head -c 5000000 ""
+  sort
+}
+background {
+  redirfd -w 1 out
+  redirfd -w 2 error
+  pipeline base64 /dev/urandom ""
+  pipeline head -c 5000000 ""
+  sort
+}
+background {
+  redirfd -w 1 out
+  redirfd -w 2 error
+  pipeline base64 /dev/urandom ""
+  pipeline head -c 5000000 ""
+  sort
+}
