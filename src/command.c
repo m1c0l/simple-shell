@@ -216,8 +216,7 @@ int endCommand(int wait_flag, int profile_flag) {
     if (profile_flag) {
       if (getrusage(RUSAGE_CHILDREN, &curr_usage))
         perror("getrusage");
-
-      printf("User: %dus\tSystem: %dus\n",
+      printf("User: %fs\tSystem: %fs\n",
           get_time_diff(prev_usage.ru_utime, curr_usage.ru_utime),
           get_time_diff(prev_usage.ru_stime, curr_usage.ru_stime));
 
