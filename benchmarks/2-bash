@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+sort out > out2 & time sort out > out2 & time sort out > out2 & time sort out > out2 & wait)
