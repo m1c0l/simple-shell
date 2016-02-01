@@ -1,0 +1,9 @@
+#!/usr/local/cs/execline-2.1.4.5/bin/execlineb
+
+time -p
+redirfd -w 1 out
+redirfd -w 2 error
+pipeline base64 /dev/urandom ""
+pipeline head -c 10000000 ""
+pipeline sort ""
+tr A-Z A-Z

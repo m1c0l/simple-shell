@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-sort out > out2 & time sort out > out2 & time sort out > out2 & time sort out > out2 & wait)
+time (time sort out > out2 & time sort out > out2 & time sort out > out2 & time sort out > out2 & /usr/bin/wait)

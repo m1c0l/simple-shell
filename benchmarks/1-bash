@@ -1,2 +1,4 @@
-#!/bin/bash
-base64 /dev/urandom | head -c 10000000 | sort | tr A-Z a-z > out  2> /dev/null
+#!/usr/bin/env bash
+
+time base64 /dev/urandom | head -c 10000000 |
+sort | tr A-Z a-z > out  2> /dev/null

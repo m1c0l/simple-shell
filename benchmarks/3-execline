@@ -1,10 +1,11 @@
 #!/usr/local/cs/execline-2.1.4.5/bin/execlineb
 
+time -p
 background {
   time -p 
   redirfd -r 0 out
   redirfd -w 1 /dev/null
-  sort
+  getpid one sort
 }
 background {
   time -p 
@@ -24,4 +25,3 @@ background {
   redirfd -w 1 /dev/null
   sort
 }
-/usr/local/cs/execline-2.1.4.5/bin/wait ""
