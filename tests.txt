@@ -4,11 +4,16 @@ List of tests
 bash:
 time (base64 /dev/urandom | head -c 10000000 | sort | tr A-Z a-z > out  2> /dev/null)
 simpsh:
-./simpsh --rdonly /dev/urandom --wronly /dev/null --pipe --pipe --wronly out --pipe --pipe --command 0 3 1 base64 --command 2 5 1 head -c 10000000 --command 4 8 1 sort --command 7 6 1 tr A-Z a-z  --wait
+./simpsh --profile --rdonly /dev/urandom --wronly /dev/null --pipe --pipe --wronly out --pipe --pipe --command 0 3 1 base64 --command 2 5 1 head -c 10000000 --command 4 8 1 sort --command 7 6 1 tr A-Z a-z  --wait
 execline:
 redirfd -w 1 out
 redirfd -w 2 error
 pipeline base64 /dev/urandom ""
 pipeline head -c 10000000 ""
 pipeline sort ""
-tr A-Z a-z
+tr A-Z A-Z
+
+2.???
+bash:
+time (base64 /dev/zero | head -c 20000000 | sed 'p;p;p;p;p;p;p;p;p;p;p;p;p;p;' | uniq > out  2> /dev/null)
+
