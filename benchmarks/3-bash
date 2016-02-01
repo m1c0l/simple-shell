@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-time \
-(time sort out > out2 & \
-time sort out > out2 & \
-time sort out > out2 & \
-time sort out > out2)
+sort out > out2 & \
+sort out > out2 & \
+sort out > out2 & \
+sort out > out2 &
