@@ -38,7 +38,8 @@ enum Options {
   IGNORE,
   DEFAULT,
   PAUSE,
-  PIPE
+  PIPE,
+  PROFILE
 };
 
 int commandReturn = 0;
@@ -69,6 +70,7 @@ static struct option long_options[] =
   {"catch", required_argument, 0, CATCH},
   {"ignore", required_argument, 0, IGNORE},
   {"pipe", no_argument, 0, PIPE},
+  {"profile", no_argument, 0, PROFILE},
   {"default", required_argument, 0, DEFAULT},
   {0, 0, 0, 0}
 };
@@ -253,6 +255,9 @@ int main (int argc, char **argv) {
               commandReturn = 1;
             }
           }
+          break;
+
+        case PROFILE:
           break;
 
         case '?':
