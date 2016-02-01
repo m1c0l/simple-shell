@@ -1,10 +1,10 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
 #include <fcntl.h>
 #include <unistd.h>
-
-#define _GNU_SOURCE
+#include <sys/resource.h>
 
 #include "filedesc.h"
 #include "command.h"
@@ -104,6 +104,12 @@ int main (int argc, char **argv) {
   int wait_flag = 0;
   int profile_flag = 0;
 
+  /* --profile data */
+  struct rusage curr_usage, prev_usage;
+  /* sets prev_usage time to zero */
+  if (getrusage(RUSAGE_SELF, &prev_usage))
+    perror("getrusage");
+
   int c;
   while (1)
     {
@@ -114,7 +120,7 @@ int main (int argc, char **argv) {
       if (c == -1)
         break;
 
-      if (verbose_flag) {
+      if (verbose_flag || profile_flag) {
         printf("--%s", long_options[option_index].name);
         if (optarg) {
           printf(" %s", optarg);
@@ -124,6 +130,11 @@ int main (int argc, char **argv) {
         }
         printf("\n");
         fflush(stdout);
+      }
+
+      if (profile_flag) {
+        if (getrusage(RUSAGE_SELF, &prev_usage))
+          perror("getrusage");
       }
 
       switch (c)
@@ -270,15 +281,24 @@ int main (int argc, char **argv) {
         default:
           break;
         }
-        if (optind < argc)
-        {
-          char *nextArg = argv[optind];
-          if (is_not_option(nextArg)) {
-            fprintf(stderr, "Extra argument for %s: %s\n",
-                long_options[option_index].name, argv[optind]);
-            commandReturn = 1;
-          }
+
+      if (profile_flag) {
+        if (getrusage(RUSAGE_SELF, &curr_usage))
+          perror("getrusage");
+        printf("User: %dus\tSystem: %dus\n",
+            get_time_diff(prev_usage.ru_utime, curr_usage.ru_utime),
+            get_time_diff(prev_usage.ru_stime, curr_usage.ru_stime));
+      }
+
+      if (optind < argc)
+      {
+        char *nextArg = argv[optind];
+        if (is_not_option(nextArg)) {
+          fprintf(stderr, "Extra argument for %s: %s\n",
+              long_options[option_index].name, argv[optind]);
+          commandReturn = 1;
         }
+      }
     }
 
   endFileDesc(); // free file descriptor array
