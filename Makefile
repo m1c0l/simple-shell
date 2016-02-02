@@ -24,8 +24,8 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEADERS)
 $(TOY_PROG): $(TOY_PROG).c
 	gcc $(TOY_PROG).c -o $(TOY_PROG)
 
-TESTS = test.sh #piazza-tests.sh
-check: simpsh
+TESTS = test.sh benchmark.sh #piazza-tests.sh
+check: simpsh $(TOY_PROG)
 	for test in $(TESTS); do \
 		./$$test || exit; \
 	done

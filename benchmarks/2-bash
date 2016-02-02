@@ -1,2 +1,6 @@
 #!/usr/bin/env bash
-time sort out > out2 & time sort out > out2 & time sort out > out2 & time sort out > out2 & /usr/bin/wait
+time sort out > out2
+time sort out > out2 
+time sort out > out2 
+time sort out > out2
+/usr/bin/wait
