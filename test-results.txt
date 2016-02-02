@@ -101,168 +101,41 @@ sys	0m0.038s
 
 simpsh:
 
-i)
-0 sort
-User: 0.253263s	System: 0.025530s
-0 sort
-User: 0.228348s	System: 0.035364s
-0 sort
-User: 0.207636s	System: 0.025825s
-0 sort
-User: 0.220917s	System: 0.032329s
-
-real	0m3.260s
-user	0m0.910s
-sys	0m0.121s
-
-ii)
-0 sort
-User: 0.196895s	System: 0.018082s
-0 sort
-User: 0.222501s	System: 0.019941s
-0 sort
-User: 0.224065s	System: 0.040085s
-0 sort
-User: 0.221559s	System: 0.045984s
-
-real	0m2.447s
-user	0m0.866s
-sys	0m0.126s
-
-iii)
-0 sort
-User: 0.193128s	System: 0.018105s
-0 sort
-User: 0.218935s	System: 0.023641s
-0 sort
-User: 0.222881s	System: 0.023350s
-0 sort
-User: 0.223289s	System: 0.025159s
-
-real	0m2.269s
-user	0m0.859s
-sys	0m0.092s
-
-iv)
-0 sort
-User: 0.206069s	System: 0.034001s
-0 sort
-User: 0.202854s	System: 0.032457s
-0 sort
-User: 0.204640s	System: 0.043628s
-0 sort
-User: 0.208861s	System: 0.021396s
-
-real	0m3.181s
-user	0m0.823s
-sys	0m0.134s
-
-v)
-0 sort
-User: 0.199965s	System: 0.012180s
-0 sort
-User: 0.240188s	System: 0.032431s
-0 sort
-User: 0.236583s	System: 0.030815s
-0 sort
-User: 0.219637s	System: 0.039744s
-
-real	0m2.409s
-user	0m0.897s
-sys	0m0.117s
-
+child 1:
+user 0.253263, 0.196895, 0.193128, 0.206069, 0.199965 => avg 0.209864
+sys  0.025530, 0.018082, 0.018105, 0.034001, 0.012180 => avg 0.0215796
+child 2:
+user 0.228348, 0.222501, 0.218935, 0.202854, 0.240188 => avg 0.2225652
+sys  0.035364, 0.019941, 0.023641, 0.032457, 0.032431 => avg 0.0287668
+child 3:
+user 0.207636, 0.224065, 0.222881, 0.204640, 0.236583 => avg 0.219161
+sys  0.025825, 0.040085, 0.023350, 0.043628, 0.030815 => avg 0.0327406
+child 4:
+user 0.220917, 0.221559, 0.223289, 0.208861, 0.219637 => avg 0.2188526
+sys  0.032329, 0.045984, 0.025159, 0.021396, 0.039744 => avg 0.0329224
+total: 
+user 0.910, 0.866, 0.859, 0.823, 0.897 => avg 0.871
+sys  0.121, 0.126, 0.092, 0.134, 0.117 => avg 0.118
 
 execline
-i)
-real 0.21
-user 0.20
-sys 0.00
-real 0.22
-user 0.21
-sys 0.00
-real 0.22
-user 0.21
-sys 0.00
-real 0.22
-user 0.21
-sys 0.00
 
-real	0m0.228s
-user	0m0.847s
-sys	0m0.038s
+child 1:
+user 0.20 0.20 0.21 0.21 0.21 => avg 0.21
+sys  0.00 0.00 0.00 0.00 0.00 => avg 0.00
+child 2:
+user 0.21 0.20 0.21 0.21 0.21 => avg 0.21
+sys  0.00 0.00 0.00 0.00 0.00 => avg 0.00
+child 3:
+user 0.21 0.20 0.21 0.21 0.21 => avg 0.21
+sys  0.00 0.00 0.00 0.00 0.00 => avg 0.00
+child 4:
+user 0.21 0.20 0.21 0.21 0.21 => avg 0.21
+sys  0.00 0.00 0.00 0.00 0.00 => avg 0.00
+total:
+user 0.847, 0.823, 0.859, 0.859, 0.861 => avg 0.8498
+sys  0.038, 0.040, 0.042, 0.042, 0.033 => avg 0.039
 
-ii)
-real 0.21
-user 0.20
-sys 0.00
-real 0.21
-user 0.20
-sys 0.00
-real 0.21
-user 0.20
-sys 0.00
-real 0.21
-user 0.20
-sys 0.00
 
-real	0m0.223s
-user	0m0.823s
-sys	0m0.040s
-
-iii)
-real 0.22
-user 0.21
-sys 0.00
-real 0.22
-user 0.21
-sys 0.00
-real 0.22
-user 0.21
-sys 0.01
-real 0.22
-user 0.21
-sys 0.00
-
-real	0m0.236s
-user	0m0.859s
-sys	0m0.042s
-
-iv)
-real 0.22
-user 0.21
-sys 0.00
-real 0.22
-user 0.21
-sys 0.00
-real 0.22
-user 0.21
-sys 0.01
-real 0.22
-user 0.21
-sys 0.00
-
-real	0m0.236s
-user	0m0.859s
-sys	0m0.042s
-
-v)
-
-real 0.22
-user 0.21
-sys 0.00
-real 0.22
-user 0.21
-sys 0.00
-real 0.22
-user 0.21
-sys 0.00
-real 0.22
-user 0.21
-sys 0.00
-
-real	0m0.229s
-user	0m0.861s
-sys	0m0.033s
 
 3.
 bash:
