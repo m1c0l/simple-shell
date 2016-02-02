@@ -31,91 +31,21 @@ sys  1.614 1.615 1.685 1.636 1.525 => avg 1.6150
 
 2.
 
-bash:
-i)
-real	0m0.367s
-user	0m0.210s
-sys	0m0.021s
+bash: (wasn't able to get the time command to record the total elapsed time)
 
-real	0m2.442s
-user	0m0.219s
-sys	0m0.031s
+child 1:
+user 0.210, 0.196, 0.201, 0.201, 0.213 => avg 0.2042
+sys  0.021, 0.015, 0.012, 0.012, 0.019 => avg 0.0158
+child 2:
+user 0.219, 0.311, 0.221, 0.221, 0.212 => avg 0.2368
+sys  0.031, 0.033, 0.034, 0.034, 0.027 => avg 0.0318
+child 3:
+user 0.213, 0.355, 0.220, 0.220, 0.214 => avg 0.2444
+sys  0.037, 0.043, 0.018, 0.018, 0.037 => avg 0.0306
+child 4:
+user 0.220, 0.280, 0.213, 0.213, 0.212 => avg 0.2276
+sys  0.042, 0.031, 0.036, 0.036, 0.038 => avg 0.0366
 
-real	0m2.445s
-user	0m0.213s
-sys	0m0.037s
-
-real	0m2.446s
-user	0m0.220s
-sys	0m0.042s
-
-ii)
-real	0m0.349s
-user	0m0.196s
-sys	0m0.015s
-
-real	0m2.242s
-user	0m0.311s
-sys	0m0.033s
-
-real	0m2.244s
-user	0m0.355s
-sys	0m0.043s
-
-real	0m2.245s
-user	0m0.280s
-sys	0m0.031s
-
-iii)
-real	0m0.354s
-user	0m0.201s
-sys	0m0.012s
-
-real	0m2.274s
-user	0m0.221s
-sys	0m0.034s
-
-real	0m2.275s
-user	0m0.220s
-sys	0m0.018s
-
-real	0m2.276s
-user	0m0.213s
-sys	0m0.036s
-
-iv)
-real	0m0.354s
-user	0m0.201s
-sys	0m0.012s
-
-real	0m2.274s
-user	0m0.221s
-sys	0m0.034s
-
-real	0m2.275s
-user	0m0.220s
-sys	0m0.018s
-
-real	0m2.276s
-user	0m0.213s
-sys	0m0.036s
-
-v)
-real	0m3.594s
-user	0m0.213s
-sys	0m0.019s
-
-real	0m3.598s
-user	0m0.212s
-sys	0m0.027s
-
-real	0m3.843s
-user	0m0.214s
-sys	0m0.037s
-
-real	0m3.845s
-user	0m0.212s
-sys	0m0.038s
 
 simpsh:
 
