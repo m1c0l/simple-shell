@@ -1,6 +1,59 @@
 #!/usr/bin/env bash
 
-sort out > out2 & \
-sort out > out2 & \
-sort out > out2 & \
-sort out > out2 &
+#exec 0 < /dev/null
+#exec 1 > /dev/null
+
+
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+benchmarks/program &
+
+/usr/bin/wait
+
