@@ -32,7 +32,7 @@ check: simpsh $(TOY_PROG)
 
 
 DISTDIR = lab1-michaelli
-DIST_FILES = Makefile README $(SRC_DIR) $(TESTS) $(BENCHMARK_DIR)
+DIST_FILES = Makefile README $(SRC_DIR) $(TESTS) $(BENCHMARK_DIR) 1c-tests.pdf
 
 dist: $(DISTDIR)
 
