@@ -1,59 +1,54 @@
 #!/usr/bin/env bash
 
-#exec 0 < /dev/null
-#exec 1 > /dev/null
-
-
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
-benchmarks/program &
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
+benchmarks/program
 
 /usr/bin/wait
-
