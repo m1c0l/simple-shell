@@ -7,7 +7,8 @@ OBJ_DIR = obj
 SOURCES = $(wildcard $(SRC_DIR)/*.c)
 HEADERS = $(wildcard $(SRC_DIR)/*.h)
 OBJECTS = $(SOURCES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
-TOY_PROG = benchmarks/program
+BENCHMARK_DIR = benchmarks
+TOY_PROG = $(BENCHMARK_DIR)/program
 
 all: simpsh $(TOY_PROG)
 
@@ -31,11 +32,11 @@ check: simpsh
 
 
 DISTDIR = lab1-michaelli
-DIST_FILES = Makefile README $(SRC_DIR) $(TESTS)
+DIST_FILES = Makefile README $(SRC_DIR) $(TESTS) $(BENCHMARK_DIR)
 
 dist: $(DISTDIR)
 
-$(DISTDIR): $(DIST_FILES)
+$(DISTDIR): clean $(DIST_FILES)
 	tar cf - --transform='s|^|$(DISTDIR)/|' $(DIST_FILES) | gzip -9 > $@.tar.gz
 
 
