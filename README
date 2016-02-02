@@ -1,7 +1,9 @@
-CS111 Lab 1a
+CS111 Lab 1
 
 Michael Li
 Richard Sun
+
+1a:
 
 Code is currently a little sloppy; we will refactor it soon.
 We do not close files opened with --rdonly and --wronly because they return -1
@@ -12,3 +14,11 @@ We tried to modularize major functionality and create a simple interface. Our
 code is set up so that it should be easy to change to add additional
 functionality as we need in the next parts of the lab.
 
+1b:
+
+We modularized the functionality of our code into several separate files in /src:
+filedesc.c, stream.c, command.c, signal_handler.c, util.c, and main.c
+
+We close all file descriptors in the parent, and after we call dup2 to copy
+the original file descriptors for the standard streams, we also close the rest
+of the file descriptors in the child processes so that pipes won't hang.
