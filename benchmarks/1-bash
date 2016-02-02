@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-base64 /dev/urandom | head -c 10000000 |
+base64 /dev/urandom | head -c 20000000 |
 sort | tr A-Z a-z > out  2> /dev/null

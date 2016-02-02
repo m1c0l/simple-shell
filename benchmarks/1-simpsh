@@ -10,7 +10,7 @@ time ./simpsh \
 --pipe \
 --pipe \
 --command 0 3 1 base64 \
---command 2 5 1 head -c 10000000 \
+--command 2 5 1 head -c 20000000 \
 --command 4 8 1 sort \
 --command 7 6 1 tr A-Z a-z \
 --wait
