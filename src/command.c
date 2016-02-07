@@ -21,7 +21,7 @@ wait_t *wait_data;
 int wait_data_index = 0;
 size_t wait_data_size = 64;
 
-int execute_command(file inf, file outf, file errf, command_data cmd_data);
+int execute_command(command_data cmd_data);
 
 int command(command_data cmd_data) {
   /* error parsing command */
@@ -37,7 +37,7 @@ int command(command_data cmd_data) {
     return 1;
   }
 
-  int ret = execute_command(inf, outf, errf, cmd_data);
+  int ret = execute_command(cmd_data);
 
   return ret;
 }
@@ -107,7 +107,7 @@ command_data parse_command(int argc, char **argv, int *opt) {
   return cmd_data;
 }
 
-int execute_command(file inf, file outf, file errf, command_data cmd_data) {
+int execute_command(command_data cmd_data) {
 
   int pid;
   pid = fork();
