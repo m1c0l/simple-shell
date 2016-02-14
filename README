@@ -22,3 +22,9 @@ filedesc.c, stream.c, command.c, signal_handler.c, util.c, and main.c
 We close all file descriptors in the parent, and after we call dup2 to copy
 the original file descriptors for the standard streams, we also close the rest
 of the file descriptors in the child processes so that pipes won't hang.
+
+1c:
+
+We made --profile output resource usage for every single option after it,
+including file options such as --append and --trunc. --profile also outputs
+resource usage of child processes being waited on after they exit.
